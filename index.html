@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Grid Monitor - Fuzzy Config</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <div class="brand">
+                <h1>⚡ SMART-GRID <span class="accent-blue">MONITOR</span></h1>
+                <div id="live-clock">--:--:--</div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-toggle-settings" class="btn-outline">⚙️ CONFIG</button>
+                <div id="status-badge" class="badge-online">ONLINE</div>
+            </div>
+        </header>
+
+        <section class="gauge-grid">
+            <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label lbl-v">TEGANGAN (V)</div></div>
+            <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label lbl-i">ARUS (A)</div></div>
+            <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label lbl-p">DAYA NYATA (W)</div></div>
+            <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label lbl-s">DAYA SEMU (VA)</div></div>
+        </section>
+
+        <section id="settings-panel" class="card settings-card hidden">
+            <div class="settings-header">
+                <h3>⚙️ Pengaturan Ambang Batas Fuzzy</h3>
+                <button id="btn-save-settings" class="btn-primary">SIMPAN KE FIREBASE</button>
+            </div>
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label>Rentang Aman (Volt)</label>
+                    <div class="input-inline">
+                        <input type="number" id="v-aman-min" placeholder="210"> <span>-</span> <input type="number" id="v-aman-max" placeholder="230">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Waspada Bawah (Volt)</label>
+                    <div class="input-inline">
+                        <input type="number" id="v-waspada-l-min" placeholder="200"> <span>-</span> <input type="number" id="v-waspada-l-max" placeholder="209">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Waspada Atas (Volt)</label>
+                    <div class="input-inline">
+                        <input type="number" id="v-waspada-h-min" placeholder="231"> <span>-</span> <input type="number" id="v-waspada-h-max" placeholder="240">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Batas Bahaya (Bawah / Atas)</label>
+                    <div class="input-inline">
+                        <input type="number" id="v-danger-l" placeholder="200"> <span>/</span> <input type="number" id="v-danger-h" placeholder="245">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Durasi Gangguan (Detik)</label>
+                    <input type="number" id="durasi-th" placeholder="1">
+                </div>
+            </div>
+        </section>
+
+        <section class="charts-grid">
+            <div class="chart-card"><h4>Voltage Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-v"></canvas></div></div></div>
+            <div class="chart-card"><h4>Current Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
+            <div class="chart-card"><h4>Real Power Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-p"></canvas></div></div></div>
+            <div class="chart-card"><h4>Apparent Power Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-s"></canvas></div></div></div>
+        </section>
+
+        <footer class="alert-footer">
+            <div id="alert-box" class="status-box">
+                <div class="alert-info">
+                    <small>STATUS PROTEKSI</small>
+                    <h2 id="alert-text">SISTEM AMAN</h2>
+                </div>
+                <div class="date-loader">
+                    <input type="date" id="select-date">
+                    <button id="btn-load-hist">MUAT RIWAYAT</button>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
