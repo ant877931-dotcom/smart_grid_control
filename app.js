@@ -14,19 +14,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER (Skala "Lama" yang Akurat) ---
+// --- GAUGE BUILDER (SKALA LAMA) ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
-    renderTo: id, width: 220, height: 220, title: title, minValue: 0, maxValue: max,
-    majorTicks: ticks, minorTicks: 2, strokeTicks: true,
-    colorPlate: "#fff", colorMajorTicks: "#444", colorMinorTicks: "#666",
-    colorTitle: color, colorNumbers: "#444", colorNeedle: color, colorNeedleEnd: color,
-    borders: true, borderOuterWidth: 10, colorBorderOuter: "#ccc",
-    needleType: "arrow", needleWidth: 3, valueBox: true,
-    colorValueText: "#fff", colorValueBoxRect: "#888",
-    animationDuration: 1500, animationRule: "linear"
+    renderTo: id, width: 180, height: 180, title: title, minValue: 0, maxValue: max,
+    majorTicks: ticks, minorTicks: 2, strokeTicks: true, colorPlate: "#fff",
+    colorTitle: color, colorNumbers: "#444", colorNeedle: color, borders: true,
+    borderOuterWidth: 10, animationDuration: 1500, animationRule: "linear",
+    valueBox: true, colorValueBoxRect: "#888", fontTitleSize: 30
 }).draw();
 
-// Skala dikembalikan agar jarum menunjuk dengan benar
 const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#2563eb');
 const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#10b981');
 const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#f59e0b');
