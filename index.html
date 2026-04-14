@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Grid Monitor - Vertical Layout</title>
+    <title>Smart Grid Monitor - Fuzzy Config</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
@@ -82,6 +82,13 @@
             </div>
         </section>
 
+        <section class="history-controls">
+            <div class="date-loader">
+                <input type="date" id="select-date">
+                <button id="btn-load-hist">MUAT RIWAYAT</button>
+            </div>
+        </section>
+
         <section class="charts-grid">
             <div class="chart-card"><h4>Voltage Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-v"></canvas></div></div></div>
             <div class="chart-card"><h4>Current Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
@@ -94,10 +101,6 @@
                 <div class="alert-info">
                     <small>STATUS PROTEKSI</small>
                     <h2 id="alert-text">SISTEM AMAN</h2>
-                </div>
-                <div class="date-loader">
-                    <input type="date" id="select-date">
-                    <button id="btn-load-hist">MUAT RIWAYAT</button>
                 </div>
             </div>
         </footer>
