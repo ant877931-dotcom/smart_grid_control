@@ -14,13 +14,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER (SKALA LAMA) ---
+// --- GAUGE BUILDER (SKALA LAMA AGAR JARUM SESUAI) ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
-    renderTo: id, width: 180, height: 180, title: title, minValue: 0, maxValue: max,
+    renderTo: id, width: 200, height: 200, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true, colorPlate: "#fff",
     colorTitle: color, colorNumbers: "#444", colorNeedle: color, borders: true,
     borderOuterWidth: 10, animationDuration: 1500, animationRule: "linear",
-    valueBox: true, colorValueBoxRect: "#888", fontTitleSize: 30
+    valueBox: true, colorValueBoxRect: "#888"
 }).draw();
 
 const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#2563eb');
