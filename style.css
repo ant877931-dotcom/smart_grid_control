@@ -14,33 +14,34 @@ header { background: var(--white); padding: 12px 18px; border-radius: 12px; disp
 
 /* Speedometer Grid */
 .gauge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); background: var(--white); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; }
-.gauge-card { padding: 15px 5px; text-align: center; }
+.gauge-card { padding: 15px 5px; text-align: center; position: relative; }
+@media (min-width: 768px) { .gauge-card:not(:last-child)::after { content: ""; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: var(--border); } }
 
 /* FIX FORM CONFIGURASI HP */
 .settings-card { background: var(--white); border-radius: 12px; padding: 15px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
 .settings-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-.settings-header h3 { font-size: 1rem; margin: 0; color: #1e293b; }
+.settings-header h3 { font-size: 1rem; margin: 0; }
 
-.settings-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.settings-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
 
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-group label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
 
-/* Input Range Group Fix */
-.range-group { display: flex; align-items: center; gap: 8px; width: 100%; }
-.range-group input { 
-    flex: 1; /* Input membagi ruang secara adil */
+/* Input Range Row Fix */
+.range-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+.range-row input { 
+    flex: 1; /* Membuat kedua kotak input membagi lebar 50:50 secara otomatis */
     padding: 10px; 
     border: 1px solid var(--border); 
     border-radius: 8px; 
     font-size: 0.9rem;
-    min-width: 0; /* Mencegah input meluap keluar layar */
+    min-width: 0; /* Penting agar input bisa mengecil di HP */
 }
-.range-group span { font-weight: bold; color: #cbd5e1; }
+.range-row span { font-weight: bold; color: #cbd5e1; }
 
 .hidden { display: none; }
 
-/* Tombol */
+/* Buttons */
 .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
 .btn-primary { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
 
@@ -48,20 +49,19 @@ header { background: var(--white); padding: 12px 18px; border-radius: 12px; disp
 .charts-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
 .chart-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 12px; }
 .scroll-wrapper { overflow-x: auto; border-radius: 8px; }
-.inner-chart { min-width: 700px; height: 240px; }
+.inner-chart { min-width: 800px; height: 260px; }
 
-/* Status Alert Footer */
+/* Footer */
 .status-box { background: var(--white); padding: 15px; border-radius: 12px; border-left: 8px solid #22c55e; display: flex; flex-direction: column; gap: 10px; }
 .date-loader { display: flex; gap: 5px; width: 100%; }
 .date-loader input { flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 6px; }
 .date-loader button { background: #334155; color: white; border: none; padding: 8px 15px; border-radius: 6px; }
 
-/* Desktop Adjustments */
+/* Desktop Adjustment */
 @media (min-width: 768px) {
     .dashboard-container { padding: 25px; }
-    .brand h1 { font-size: 1.5rem; }
     .settings-grid { grid-template-columns: 1fr 1fr; }
     .charts-grid { grid-template-columns: 1fr 1fr; }
-    .status-box { flex-direction: row; justify-content: space-between; }
+    .status-box { flex-direction: row; justify-content: space-between; align-items: center; }
     .btn-primary { width: auto; }
 }
