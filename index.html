@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Grid Monitor - Pro White</title>
+    <title>Smart Grid Monitor - Fix Config</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
@@ -17,7 +17,7 @@
             </div>
             <div class="header-actions">
                 <button id="btn-toggle-settings" class="btn-outline">⚙️ CONFIG</button>
-                <div id="status-badge">ONLINE</div>
+                <div id="status-badge" class="badge-online">ONLINE</div>
             </div>
         </header>
 
@@ -36,7 +36,7 @@
             <div class="settings-grid">
                 <div class="form-group">
                     <label>Rentang Aman (Volt)</label>
-                    <div class="range-group">
+                    <div class="range-row">
                         <input type="number" id="v-aman-min" placeholder="Min">
                         <span>-</span>
                         <input type="number" id="v-aman-max" placeholder="Max">
@@ -44,7 +44,7 @@
                 </div>
                 <div class="form-group">
                     <label>Waspada Bawah (Volt)</label>
-                    <div class="range-group">
+                    <div class="range-row">
                         <input type="number" id="v-waspada-l-min" placeholder="Min">
                         <span>-</span>
                         <input type="number" id="v-waspada-l-max" placeholder="Max">
@@ -52,15 +52,15 @@
                 </div>
                 <div class="form-group">
                     <label>Waspada Atas (Volt)</label>
-                    <div class="range-group">
+                    <div class="range-row">
                         <input type="number" id="v-waspada-h-min" placeholder="Min">
                         <span>-</span>
                         <input type="number" id="v-waspada-h-max" placeholder="Max">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Batas Bahaya (Bawah / Atas)</label>
-                    <div class="range-group">
+                    <label>Bahaya (Bawah / Atas)</label>
+                    <div class="range-row">
                         <input type="number" id="v-danger-l" placeholder="Low">
                         <span>/</span>
                         <input type="number" id="v-danger-h" placeholder="High">
@@ -68,7 +68,7 @@
                 </div>
                 <div class="form-group">
                     <label>Durasi Gangguan (Detik)</label>
-                    <input type="number" id="durasi-th" placeholder="Contoh: 1">
+                    <input type="number" id="durasi-th" placeholder="Default: 1">
                 </div>
             </div>
         </section>
