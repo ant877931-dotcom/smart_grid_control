@@ -43,7 +43,7 @@ const chartI = createChart('chart-i', 'Current', '#10b981');
 const chartP = createChart('chart-p', 'Real Power', '#f59e0b');
 const chartS = createChart('chart-s', 'Apparent', '#8b5cf6');
 
-// --- LOGIC: CONFIGURATION ---
+// --- CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
 document.getElementById('btn-toggle-settings').onclick = () => setPanel.classList.toggle('hidden');
 
@@ -77,7 +77,7 @@ document.getElementById('btn-save-settings').onclick = () => {
     update(ref(db, 'Monitoring/settings'), dataSet).then(() => alert("Konfigurasi Berhasil Disimpan!"));
 };
 
-// --- LOGIC: REAL-TIME DATA ---
+// --- REAL-TIME MONITORING ---
 onValue(ref(db, 'Monitoring/monitoring'), (snap) => {
     const d = snap.val();
     if(d) {
@@ -87,11 +87,11 @@ onValue(ref(db, 'Monitoring/monitoring'), (snap) => {
     }
 });
 
-// --- LOGIC: HISTORY ---
+// --- LOAD HISTORY DATA ---
 document.getElementById('btn-load-hist').onclick = () => {
-    const d = document.getElementById('select-date').value.split('-');
-    if(d.length < 3) return alert("Pilih tanggal!");
-    get(ref(db, `Monitoring/history/${d[0]}/${d[1]}/${d[2]}`)).then((snap) => {
+    const date = document.getElementById('select-date').value.split('-');
+    if(date.length < 3) return alert("Pilih tanggal!");
+    get(ref(db, `Monitoring/history/${date[0]}/${date[1]}/${date[2]}`)).then((snap) => {
         const h = snap.val();
         if(h) {
             const v=[], i=[], p=[], s=[];
