@@ -14,6 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// --- GAUGE BUILDER ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 220, height: 220, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
@@ -30,6 +31,7 @@ const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#10b98
 const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#f59e0b');
 const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#8b5cf6');
 
+// --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), datasets: [{ label, data: [], borderColor: color, fill: true, backgroundColor: color + '1A', tension: 0.3 }] },
@@ -41,6 +43,7 @@ const chartI = createChart('chart-i', 'Current', '#10b981');
 const chartP = createChart('chart-p', 'Real Power', '#f59e0b');
 const chartS = createChart('chart-s', 'Apparent', '#8b5cf6');
 
+// --- LOGIC: CONFIGURATION ---
 const setPanel = document.getElementById('settings-panel');
 document.getElementById('btn-toggle-settings').onclick = () => setPanel.classList.toggle('hidden');
 
@@ -74,6 +77,7 @@ document.getElementById('btn-save-settings').onclick = () => {
     update(ref(db, 'Monitoring/settings'), dataSet).then(() => alert("Konfigurasi Berhasil Disimpan!"));
 };
 
+// --- LOGIC: REAL-TIME DATA ---
 onValue(ref(db, 'Monitoring/monitoring'), (snap) => {
     const d = snap.val();
     if(d) {
@@ -83,6 +87,7 @@ onValue(ref(db, 'Monitoring/monitoring'), (snap) => {
     }
 });
 
+// --- LOGIC: HISTORY ---
 document.getElementById('btn-load-hist').onclick = () => {
     const d = document.getElementById('select-date').value.split('-');
     if(d.length < 3) return alert("Pilih tanggal!");
