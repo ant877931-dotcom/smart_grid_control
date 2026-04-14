@@ -15,30 +15,22 @@ header { background: var(--white); padding: 15px 25px; border-radius: 12px; disp
 .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 .btn-primary { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
-/* PANEL KONFIGURASI (STYLE BARU) */
 .settings-card { background: var(--white); border-radius: 12px; padding: 24px; border: 1px solid var(--border); margin-bottom: 25px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
 .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px solid var(--bg-main); }
-
 .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-
 .config-group { display: flex; flex-direction: column; gap: 16px; padding: 15px; background: #fdfdfd; border-radius: 8px; border: 1px solid #f1f5f9; }
 .group-title { font-size: 0.75rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
 
 .form-group { display: flex; flex-direction: column; gap: 8px; }
 .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--text-label); }
 
-/* Range Box Style */
-.input-range-box { display: flex; align-items: center; background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: 0.2s; }
-.input-range-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+.input-range-box { display: flex; align-items: center; background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .input-range-box input { border: none !important; padding: 10px; width: 100%; text-align: center; font-size: 0.9rem; outline: none; }
 .range-sep { padding: 0 10px; color: #cbd5e1; font-weight: bold; background: #f8fafc; height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
 
-.single-input { padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; transition: 0.2s; }
-.single-input:focus { border-color: var(--accent); }
-
+.single-input { padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
 .hidden { display: none; }
 
-/* Gauge Grid */
 .gauge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); background: var(--white); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 25px; }
 .gauge-card { padding: 25px; text-align: center; position: relative; }
 .gauge-card:not(:last-child)::after { content: ""; position: absolute; right: 0; top: 15%; height: 70%; width: 1px; background: var(--border); }
@@ -46,8 +38,13 @@ header { background: var(--white); padding: 15px 25px; border-radius: 12px; disp
 .gauge-label { font-size: 0.9rem; font-weight: 700; margin-top: 15px; }
 .lbl-v { color: #2563eb; } .lbl-i { color: #10b981; } .lbl-p { color: #f59e0b; } .lbl-s { color: #8b5cf6; }
 
-/* Charts Grid */
-.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+/* PERUBAHAN TATA LETAK GRAFIK (VERTIKAL) */
+.charts-grid { 
+    display: grid; 
+    grid-template-columns: 1fr; /* Memaksa satu kolom saja */
+    gap: 20px; 
+}
+
 .chart-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 15px; }
 .scroll-wrapper { overflow-x: auto; border: 1px solid #f1f5f9; border-radius: 8px; }
 .inner-chart { min-width: 1000px; height: 260px; }
