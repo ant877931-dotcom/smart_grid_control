@@ -11,7 +11,7 @@
 // --- KREDENSIAL ---
 #define WIFI_SSID "TECNO CAMON 40"
 #define WIFI_PASSWORD "414c766532b1" 
-#define API_KEY "AIzaSyAr_jda1kVfNTSRo62th2kMpJ-vsHlCXVw"
+#define API_KEY "AIzaSyAr_jda1kVfNTSRo62th2kMpJ-vsHlCXVw" 
 #define DATABASE_URL "https://smart-grid-monitor-default-rtdb.asia-southeast1.firebasedatabase.app/"
 
 // --- KONFIGURASI PIN (FIX MAPPING TERBARU) ---
