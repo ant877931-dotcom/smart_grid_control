@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Grid Monitor - Mobile Scroll</title>
+    <title>Smart Grid Monitor - Integrated</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
@@ -30,53 +30,38 @@
 
         <section id="settings-panel" class="card settings-card hidden">
             <div class="settings-header">
-                <h3>⚙️ Konfigurasi Parameter Fuzzy</h3>
+                <h3>⚙️ Konfigurasi Parameter Proteksi</h3>
                 <button id="btn-save-settings" class="btn-primary">SIMPAN KE FIREBASE</button>
             </div>
             <div class="settings-grid">
                 <div class="config-group">
-                    <span class="group-title">Rentang Operasional Aman</span>
+                    <span class="group-title">Rentang Aman</span>
                     <div class="form-group">
-                        <label>Tegangan Normal (V)</label>
+                        <label>Min/Max Normal (V)</label>
                         <div class="input-range-box">
-                            <input type="number" id="v-aman-min" placeholder="Min">
+                            <input type="number" id="v-aman-min" value="198">
                             <span class="range-sep">-</span>
-                            <input type="number" id="v-aman-max" placeholder="Max">
+                            <input type="number" id="v-aman-max" value="231">
                         </div>
                     </div>
                 </div>
                 <div class="config-group">
-                    <span class="group-title">Ambang Batas Waspada</span>
+                    <span class="group-title">Waspada & Bahaya</span>
                     <div class="form-group">
-                        <label>Waspada Bawah (V)</label>
+                        <label>Batas Bawah (Waspada/Bahaya)</label>
                         <div class="input-range-box">
-                            <input type="number" id="v-waspada-l-min" placeholder="Min">
-                            <span class="range-sep">-</span>
-                            <input type="number" id="v-waspada-l-max" placeholder="Max">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Waspada Atas (V)</label>
-                        <div class="input-range-box">
-                            <input type="number" id="v-waspada-h-min" placeholder="Min">
-                            <span class="range-sep">-</span>
-                            <input type="number" id="v-waspada-h-max" placeholder="Max">
-                        </div>
-                    </div>
-                </div>
-                <div class="config-group">
-                    <span class="group-title">Kondisi Bahaya & Proteksi</span>
-                    <div class="form-group">
-                        <label>Cut-off Bawah / Atas (V)</label>
-                        <div class="input-range-box">
-                            <input type="number" id="v-danger-l" placeholder="Low">
+                            <input type="number" id="v-waspada-l" value="188">
                             <span class="range-sep">/</span>
-                            <input type="number" id="v-danger-h" placeholder="High">
+                            <input type="number" id="v-danger-l" value="170">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Delay Gangguan (Detik)</label>
-                        <input type="number" id="durasi-th" placeholder="1" class="single-input">
+                        <label>Batas Atas (Waspada/Bahaya)</label>
+                        <div class="input-range-box">
+                            <input type="number" id="v-waspada-h" value="241">
+                            <span class="range-sep">/</span>
+                            <input type="number" id="v-danger-h" value="250">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,15 +77,13 @@
         <section class="charts-grid">
             <div class="chart-card"><h4>Voltage Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-v"></canvas></div></div></div>
             <div class="chart-card"><h4>Current Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
-            <div class="chart-card"><h4>Real Power Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-p"></canvas></div></div></div>
-            <div class="chart-card"><h4>Apparent Power Log</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-s"></canvas></div></div></div>
         </section>
 
         <footer class="alert-footer">
             <div id="alert-box" class="status-box">
                 <div class="alert-info">
                     <small>STATUS PROTEKSI</small>
-                    <h2 id="alert-text">SISTEM AMAN</h2>
+                    <h2 id="alert-text">SISTEM NORMAL</h2>
                 </div>
             </div>
         </footer>
