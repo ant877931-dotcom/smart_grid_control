@@ -18,93 +18,43 @@ const db = getDatabase(app);
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 220, height: 220, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
-    colorPlate: "#fff", colorMajorTicks: "#444", colorMinorTicks: "#666",
-    colorTitle: color, colorNumbers: "#444", colorNeedle: color, colorNeedleEnd: color,
-    borders: true, borderOuterWidth: 10, colorBorderOuter: "#ccc",
-    needleType: "arrow", needleWidth: 3, valueBox: true,
-    colorValueText: "#fff", colorValueBoxRect: "#888",
-    animationDuration: 1500, animationRule: "linear"
+    colorPlate: "#fff", colorTitle: color, colorNeedle: color,
+    animationDuration: 1500, valueBox: true
 }).draw();
 
-const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#2563eb');
-const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#10b981');
-const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#f59e0b');
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#8b5cf6');
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","100","200","300"], '#2563eb');
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","10","20"], '#10b981');
+const gP = buildG('gauge-p', 'WATT', 5000, ["0","2k","5k"], '#f59e0b');
+const gS = buildG('gauge-s', 'VA', 5000, ["0","2k","5k"], '#8b5cf6');
 
-// --- CHART BUILDER ---
-const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
-    type: 'line',
-    data: { labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), datasets: [{ label, data: [], borderColor: color, fill: true, backgroundColor: color + '1A', tension: 0.3 }] },
-    options: { responsive: true, maintainAspectRatio: false }
-});
-
-const chartV = createChart('chart-v', 'Voltage', '#2563eb');
-const chartI = createChart('chart-i', 'Current', '#10b981');
-const chartP = createChart('chart-p', 'Real Power', '#f59e0b');
-const chartS = createChart('chart-s', 'Apparent', '#8b5cf6');
-
-// --- CONFIGURATION LOGIC ---
-const setPanel = document.getElementById('settings-panel');
-document.getElementById('btn-toggle-settings').onclick = () => setPanel.classList.toggle('hidden');
-
-onValue(ref(db, 'Monitoring/settings'), (snap) => {
-    const s = snap.val();
-    if(s) {
-        document.getElementById('v-aman-min').value = s.v_aman_min;
-        document.getElementById('v-aman-max').value = s.v_aman_max;
-        document.getElementById('v-waspada-l-min').value = s.v_waspada_l_min;
-        document.getElementById('v-waspada-l-max').value = s.v_waspada_l_max;
-        document.getElementById('v-waspada-h-min').value = s.v_waspada_h_min;
-        document.getElementById('v-waspada-h-max').value = s.v_waspada_h_max;
-        document.getElementById('v-danger-l').value = s.v_danger_l;
-        document.getElementById('v-danger-h').value = s.v_danger_h;
-        document.getElementById('durasi-th').value = s.durasi_threshold;
-    }
-});
-
-document.getElementById('btn-save-settings').onclick = () => {
-    const dataSet = {
-        v_aman_min: parseInt(document.getElementById('v-aman-min').value),
-        v_aman_max: parseInt(document.getElementById('v-aman-max').value),
-        v_waspada_l_min: parseInt(document.getElementById('v-waspada-l-min').value),
-        v_waspada_l_max: parseInt(document.getElementById('v-waspada-l-max').value),
-        v_waspada_h_min: parseInt(document.getElementById('v-waspada-h-min').value),
-        v_waspada_h_max: parseInt(document.getElementById('v-waspada-h-max').value),
-        v_danger_l: parseInt(document.getElementById('v-danger-l').value),
-        v_danger_h: parseInt(document.getElementById('v-danger-h').value),
-        durasi_threshold: parseInt(document.getElementById('durasi-th').value)
-    };
-    update(ref(db, 'Monitoring/settings'), dataSet).then(() => alert("Konfigurasi Berhasil Disimpan!"));
-};
-
-// --- REAL-TIME MONITORING ---
-onValue(ref(db, 'Monitoring/monitoring'), (snap) => {
+// --- REAL-TIME MONITORING (Sesuai Path ESP32) ---
+onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
     const d = snap.val();
     if(d) {
-        gV.value = d.voltage; gI.value = d.current; gP.value = d.real_power; gS.value = d.apparent_power;
+        gV.value = d.voltage;
+        gI.value = d.current;
+        gP.value = d.power;
+        gS.value = (d.voltage * d.current).toFixed(1);
+        
         document.getElementById('alert-text').innerText = "SISTEM " + d.status;
-        document.querySelector('.status-box').style.borderLeftColor = d.status === 'AMAN' ? '#22c55e' : (d.status === 'WASPADA' ? '#f59e0b' : '#ef4444');
+        const statusBox = document.querySelector('.status-box');
+        statusBox.style.borderLeftColor = d.status === 'NORMAL' ? '#22c55e' : (d.status === 'WASPADA' ? '#f59e0b' : '#ef4444');
     }
 });
 
-// --- LOAD HISTORY DATA ---
-document.getElementById('btn-load-hist').onclick = () => {
-    const date = document.getElementById('select-date').value.split('-');
-    if(date.length < 3) return alert("Pilih tanggal!");
-    get(ref(db, `Monitoring/history/${date[0]}/${date[1]}/${date[2]}`)).then((snap) => {
-        const h = snap.val();
-        if(h) {
-            const v=[], i=[], p=[], s=[];
-            for(let hr=0; hr<24; hr++){
-                const k = String(hr).padStart(2, '0');
-                v.push(h[k]?.v || null); i.push(h[k]?.i || null); p.push(h[k]?.p || null); s.push(h[k]?.s || null);
-            }
-            chartV.data.datasets[0].data = v; chartV.update();
-            chartI.data.datasets[0].data = i; chartI.update();
-            chartP.data.datasets[0].data = p; chartP.update();
-            chartS.data.datasets[0].data = s; chartS.update();
-        }
-    });
+// --- SETTINGS LOGIC (Kirim ke ESP32) ---
+document.getElementById('btn-toggle-settings').onclick = () => document.getElementById('settings-panel').classList.toggle('hidden');
+
+document.getElementById('btn-save-settings').onclick = () => {
+    const settings = {
+        v_aman_min: parseFloat(document.getElementById('v-aman-min').value),
+        v_aman_max: parseFloat(document.getElementById('v-aman-max').value),
+        v_waspada_l: parseFloat(document.getElementById('v-waspada-l').value),
+        v_waspada_h: parseFloat(document.getElementById('v-waspada-h').value),
+        v_danger_l: parseFloat(document.getElementById('v-danger-l').value),
+        v_danger_h: parseFloat(document.getElementById('v-danger-h').value)
+    };
+    update(ref(db, 'SmartGrid/Settings'), settings).then(() => alert("Parameter Berhasil Dikirim ke ESP32!"));
 };
 
 setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('id-ID'); }, 1000);
