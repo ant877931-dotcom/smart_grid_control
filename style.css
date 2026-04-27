@@ -1,23 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    /* Palet Warna Ocean / Sky Blue Modern */
-    --bg-main: #eff6ff;        /* Biru sangat muda (Sky Blue 50) untuk background */
+    /* Palet Tema: Ocean / Premium Blue */
+    --bg-main: #eff6ff;        /* Biru es sangat muda untuk background */
     --card-bg: #ffffff;        /* Putih bersih untuk kartu */
-    --text-main: #1e3a8a;      /* Biru dongker (Navy Blue 900) untuk teks utama */
-    --text-muted: #64748b;     /* Slate kebiruan untuk teks sekunder/label */
-    --border-light: #dbeafe;   /* Garis batas biru muda (Blue 100) */
-    
-    --accent-blue: #2563eb;    /* Biru utama yang menyala */
-    --accent-hover: #1e40af;   /* Biru gelap saat di-hover */
+    --border-light: #dbeafe;   /* Garis batas (border) kebiruan */
+    --text-main: #1e3a8a;      /* Teks utama: Biru Dongker (Navy) */
+    --text-muted: #60a5fa;     /* Teks label: Biru terang */
+    --accent-blue: #2563eb;    /* Biru utama (Tetap) */
+    --accent-hover: #1d4ed8;   
     --accent-green: #10b981;
     --accent-orange: #f59e0b;
     --accent-purple: #8b5cf6;
     --danger: #ef4444;
     
-    /* Bayangan Lembut dengan Nuansa Biru (Blue Tinted Shadows) */
+    /* Bayangan Modern (Soft Blue Shadows) */
     --shadow-sm: 0 1px 2px 0 rgba(37, 99, 235, 0.05);
-    --shadow-card: 0 8px 30px rgba(37, 99, 235, 0.08); /* Glow biru sangat tipis */
+    --shadow-md: 0 4px 6px -1px rgba(37, 99, 235, 0.05);
+    --shadow-card: 0 8px 24px rgba(37, 99, 235, 0.08); /* Shadow sedikit biru */
     
     /* Radius Melengkung */
     --radius-md: 10px;
@@ -51,7 +51,6 @@ header {
     align-items: center; 
     margin-bottom: 35px; 
     box-shadow: var(--shadow-card); 
-    border: 1px solid var(--border-light);
 }
 
 .brand h1 {
@@ -62,11 +61,10 @@ header {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--text-main);
 }
 
 .accent-blue {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--accent-blue), #38bdf8); /* Gradien biru cerah */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -114,8 +112,8 @@ header {
 
 /* ================= TOMBOL ================= */
 .btn-outline { 
-    background: #eff6ff; 
-    border: 1px solid #bfdbfe; 
+    background: transparent; 
+    border: 2px solid var(--border-light); 
     color: var(--accent-blue); 
     padding: 10px 20px; 
     border-radius: var(--radius-md); 
@@ -126,11 +124,11 @@ header {
 }
 .btn-outline:hover {
     border-color: var(--accent-blue);
-    background: #dbeafe;
+    background: #eff6ff;
 }
 
 .btn-primary { 
-    background: linear-gradient(135deg, #3b82f6, var(--accent-blue)); 
+    background: linear-gradient(135deg, var(--accent-blue), #1e40af); 
     color: white; 
     border: none; 
     padding: 12px 24px; 
@@ -139,11 +137,11 @@ header {
     font-weight: 600; 
     font-size: 0.85rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
 }
 
 /* ================= GAUGE GRID ================= */
@@ -161,12 +159,11 @@ header {
     text-align: center; 
     box-shadow: var(--shadow-card);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid var(--border-light);
+    border: 1px solid rgba(255,255,255,0.7); 
 }
 .gauge-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(37, 99, 235, 0.12); /* Glow biru saat hover */
-    border-color: #bfdbfe;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.12);
 }
 
 .gauge-label { 
@@ -188,7 +185,6 @@ header {
     padding: 35px; 
     margin-bottom: 35px; 
     box-shadow: var(--shadow-card);
-    border: 1px solid var(--border-light);
 }
 .settings-header { 
     display: flex; justify-content: space-between; align-items: center; 
@@ -199,7 +195,8 @@ header {
 
 .config-group { 
     display: flex; flex-direction: column; gap: 16px; padding: 25px; 
-    background: #f8fafc; border-radius: var(--radius-md); 
+    background: #f8fafc; /* Latar panel config sedikit kontras dengan background utama */
+    border-radius: var(--radius-md); 
     border: 1px solid var(--border-light); 
 }
 .group-title { font-size: 0.75rem; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
@@ -210,21 +207,19 @@ header {
 .input-range-box { 
     display: flex; align-items: center; background: var(--card-bg); 
     border-radius: 8px; overflow: hidden; 
+    box-shadow: inset 0 1px 3px rgba(37,99,235,0.05);
     border: 1px solid var(--border-light);
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s;
 }
-.input-range-box:focus-within { 
-    border-color: var(--accent-blue); 
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.15); 
-}
+.input-range-box:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 .input-range-box input { 
     border: none !important; padding: 12px; width: 100%; 
     text-align: center; font-size: 1rem; font-weight: 600; outline: none; 
     color: var(--accent-blue); background: transparent;
 }
 .range-sep { 
-    padding: 0 15px; color: #94a3b8; font-weight: bold; 
-    background: #f1f5f9; height: 100%; display: flex; align-items: center; 
+    padding: 0 15px; color: var(--text-muted); font-weight: bold; 
+    background: #eff6ff; height: 100%; display: flex; align-items: center; 
     border-left: 1px solid var(--border-light); border-right: 1px solid var(--border-light); 
 }
 
@@ -244,16 +239,14 @@ header {
     border: 1px solid var(--border-light); outline: none; 
     font-size: 0.9rem; font-family: 'Inter'; font-weight: 600;
     color: var(--text-main); cursor: pointer;
-    background: #f8fafc;
 }
-.date-loader input:focus { border-color: var(--accent-blue); background: #ffffff; }
+.date-loader input:focus { border-color: var(--accent-blue); }
 
 /* ================= CHARTS ================= */
 .charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
 .chart-card { 
     background: var(--card-bg); border-radius: var(--radius-lg); 
     padding: 25px; box-shadow: var(--shadow-card); 
-    border: 1px solid var(--border-light);
 }
 .chart-card h4 { margin: 0 0 20px 0; color: var(--text-main); font-size: 1.1rem; font-weight: 700; }
 
@@ -266,11 +259,11 @@ header {
 }
 .inner-chart { min-width: 900px; height: 350px; padding: 15px; } 
 
-/* Custom Scrollbar for Charts */
+/* Custom Scrollbar for Charts (Biru Muda) */
 .scroll-wrapper::-webkit-scrollbar { height: 8px; }
-.scroll-wrapper::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 4px;}
-.scroll-wrapper::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-.scroll-wrapper::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+.scroll-wrapper::-webkit-scrollbar-track { background: #eff6ff; border-radius: 4px;}
+.scroll-wrapper::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 4px; }
+.scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #93c5fd; }
 
 /* ================= FOOTER STATUS ================= */
 .status-box { 
@@ -278,9 +271,6 @@ header {
     border-radius: var(--radius-lg); 
     border-left: 12px solid var(--accent-green); 
     box-shadow: var(--shadow-card); 
-    border-top: 1px solid var(--border-light);
-    border-right: 1px solid var(--border-light);
-    border-bottom: 1px solid var(--border-light);
     display: flex; align-items: center;
     transition: border-color 0.3s ease;
 }
