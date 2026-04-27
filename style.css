@@ -32,25 +32,77 @@ header { background: var(--card-bg); padding: 20px 30px; border-radius: var(--ra
 .btn-primary { background: linear-gradient(135deg, var(--accent-blue), #1e40af); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3); }
 
-/* Config Panel */
-.settings-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 35px; margin-bottom: 35px; box-shadow: var(--shadow-card); }
-.settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; }
-.settings-header h3 { margin: 0; color: var(--text-main); font-weight: 700; }
-.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; } 
-.config-group { display: flex; flex-direction: column; gap: 16px; padding: 25px; background: #f8fafc; border-radius: var(--radius-md); border: 1px solid var(--border-light); }
-.group-title { font-size: 0.75rem; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
-.form-group { display: flex; flex-direction: column; gap: 8px; }
-.form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
-.input-range-box { display: flex; align-items: center; background: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-light); transition: border-color 0.3s; }
-.input-range-box:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-.input-range-box input { border: none !important; padding: 12px; width: 100%; text-align: center; font-size: 1rem; font-weight: 600; outline: none; color: var(--accent-blue); background: transparent; }
-.range-sep { padding: 0 15px; color: var(--text-muted); font-weight: bold; background: #eff6ff; height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border-light); border-right: 1px solid var(--border-light); }
-.hidden { display: none !important; }
+/* ================= CONFIG PANEL (TEMA DARK NAVY) ================= */
+.settings-card { 
+    background: #0f172a; /* Latar utama kartu: Biru Dongker */
+    border-radius: var(--radius-lg); 
+    padding: 35px; 
+    margin-bottom: 35px; 
+    border: 1px solid #1e293b;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); 
+}
 
-.history-controls { margin-bottom: 25px; }
-.date-loader { display: flex; gap: 15px; background: var(--card-bg); padding: 15px; border-radius: var(--radius-md); align-items: center; width: fit-content; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
-.date-loader input { padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border-light); outline: none; font-size: 0.9rem; font-weight: 600; color: var(--text-main); cursor: pointer; }
-.date-loader input:focus { border-color: var(--accent-blue); }
+.settings-header { 
+    display: flex; justify-content: space-between; align-items: center; 
+    margin-bottom: 25px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; 
+}
+
+.settings-header h3 { 
+    margin: 0; color: #f8fafc; /* Teks judul putih terang */
+    font-weight: 700; 
+}
+
+.settings-grid { 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; 
+} 
+
+.config-group { 
+    display: flex; flex-direction: column; gap: 16px; padding: 25px; 
+    background: #0b1120; /* Latar grup lebih gelap dari kartu */
+    border-radius: var(--radius-md); 
+    border: 1px solid #1e293b; 
+}
+
+.group-title { 
+    font-size: 0.75rem; font-weight: 800; 
+    color: #38bdf8; /* Aksen Cyan agar serasi dengan warna Tegangan */
+    text-transform: uppercase; letter-spacing: 1px; 
+}
+
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+
+.form-group label { 
+    font-size: 0.85rem; font-weight: 600; 
+    color: #cbd5e1; /* Warna label abu-abu terang */
+}
+
+.input-range-box { 
+    display: flex; align-items: center; 
+    background: #0f172a; /* Latar input box */
+    border-radius: 8px; overflow: hidden; 
+    border: 1px solid #334155; 
+    transition: border-color 0.3s; 
+}
+
+.input-range-box:focus-within { 
+    border-color: #38bdf8; 
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); 
+}
+
+.input-range-box input { 
+    border: none !important; padding: 12px; width: 100%; 
+    text-align: center; font-size: 1rem; font-weight: 600; outline: none; 
+    color: #f8fafc; /* Angka input putih terang */
+    background: transparent; 
+}
+
+.range-sep { 
+    padding: 0 15px; font-weight: bold; 
+    color: #64748b; 
+    background: #1e293b; /* Latar pemisah angka */
+    height: 100%; display: flex; align-items: center; 
+    border-left: 1px solid #334155; border-right: 1px solid #334155; 
+}
 
 /* ================= SPEEDOMETER AREA ================= */
 .gauge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-bottom: 35px; }
