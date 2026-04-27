@@ -11,48 +11,59 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER (TEMA NEON BLUE) ---
-const buildG = (id, title, max, ticks) => new RadialGauge({
+// --- GAUGE BUILDER (TEMA BIRU DONGKER / NAVY) ---
+const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     
-    // Warna Background Neon
-    colorPlate: "#08f7fe", 
+    // Latar Belakang Biru Dongker
+    colorPlate: "#0f172a", 
     
-    // Warna Font dan Jarum Kontras Gelap (Navy)
-    colorMajorTicks: "#001529", colorMinorTicks: "#001529",
-    colorTitle: "#001529", colorNumbers: "#001529", 
-    colorNeedle: "#001529", colorNeedleEnd: "#001529",
+    // Teks dan Garis Menjadi Putih Terang/Abu Terang
+    colorMajorTicks: "#cbd5e1", colorMinorTicks: "#cbd5e1",
+    colorNumbers: "#f8fafc", 
     
-    borders: true, borderOuterWidth: 10, colorBorderOuter: "#e2e8f0",
+    // Warna Jarum dan Judul Sesuai Karakteristik (Biru, Hijau, dll)
+    colorTitle: color, 
+    colorNeedle: color, colorNeedleEnd: color,
+    
+    borders: true, borderOuterWidth: 10, colorBorderOuter: "#1e293b",
     needleType: "arrow", needleWidth: 4, valueBox: true,
     
-    // Warna Value Box
-    colorValueText: "#08f7fe", colorValueBoxRect: "#001529",
+    // Kotak Nilai di bawah jarum
+    colorValueText: color, colorValueBoxRect: "#1e293b",
     animationDuration: 1000, animationRule: "linear"
 }).draw();
 
-const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"]);
-const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"]);
-const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"]);
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"]);
+// Inisialisasi dengan warna-warni cerah agar menyala di atas Navy
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8');
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399');
+const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#fbbf24');
+const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa');
 
-// --- CHART BUILDER (Garis Biru Gelap di Atas Latar Neon) ---
-const createChart = (id, label) => new Chart(document.getElementById(id).getContext('2d'), {
+// --- CHART BUILDER (TEMA BIRU DONGKER / NAVY) ---
+const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { 
         labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), 
         datasets: [{ 
-            label, data: [], borderColor: '#001529', fill: true, backgroundColor: 'rgba(0, 21, 41, 0.1)', tension: 0.3 
+            label, data: [], borderColor: color, fill: true, backgroundColor: color + '22', tension: 0.3 
         }] 
     },
-    options: { responsive: true, maintainAspectRatio: false }
+    options: { 
+        responsive: true, maintainAspectRatio: false,
+        color: '#cbd5e1', // Warna teks legenda
+        scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, // Warna grid & angka koordinat
+            y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+        }
+    }
 });
 
-const chartV = createChart('chart-v', 'Voltage (V)');
-const chartI = createChart('chart-i', 'Current (A)');
-const chartP = createChart('chart-p', 'Real Power (W)');
-const chartS = createChart('chart-s', 'Apparent Power (VA)');
+const chartV = createChart('chart-v', 'Voltage (V)', '#38bdf8');
+const chartI = createChart('chart-i', 'Current (A)', '#34d399');
+const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
+const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
 // --- CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
