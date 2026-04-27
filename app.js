@@ -11,16 +11,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER ---
+// --- GAUGE BUILDER (Ukuran Diperbesar ke 240px) ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
-    renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max, // Ukuran Gauge diperbesar menjadi 240px
+    renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     colorPlate: "#fff", colorMajorTicks: "#444", colorMinorTicks: "#666",
     colorTitle: color, colorNumbers: "#444", colorNeedle: color, colorNeedleEnd: color,
     borders: true, borderOuterWidth: 10, colorBorderOuter: "#f8fafc",
     needleType: "arrow", needleWidth: 3, valueBox: true,
     colorValueText: "#fff", colorValueBoxRect: "#888",
-    animationDuration: 1000, animationRule: "linear" // Animasi dipercepat agar terasa lebih real-time
+    animationDuration: 1000, animationRule: "linear"
 }).draw();
 
 const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#2563eb');
@@ -35,10 +35,10 @@ const createChart = (id, label, color) => new Chart(document.getElementById(id).
     options: { responsive: true, maintainAspectRatio: false }
 });
 
-const chartV = createChart('chart-v', 'Voltage', '#2563eb');
-const chartI = createChart('chart-i', 'Current', '#10b981');
-const chartP = createChart('chart-p', 'Real Power', '#f59e0b');
-const chartS = createChart('chart-s', 'Apparent Power', '#8b5cf6');
+const chartV = createChart('chart-v', 'Voltage (V)', '#2563eb');
+const chartI = createChart('chart-i', 'Current (A)', '#10b981');
+const chartP = createChart('chart-p', 'Real Power (W)', '#f59e0b');
+const chartS = createChart('chart-s', 'Apparent Power (VA)', '#8b5cf6');
 
 // --- CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
@@ -68,26 +68,23 @@ document.getElementById('btn-save-settings').onclick = () => {
     update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Konfigurasi Berhasil Disimpan!"));
 };
 
-// --- FIX: REAL-TIME MONITORING ---
+// --- REAL-TIME MONITORING (Murni Sinkron dengan Database) ---
 onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
     const d = snap.val();
     if(d) {
-        // Terapkan nilai terbaru dengan fallback 0 agar tidak stuck di angka lama
-        gV.value = typeof d.voltage !== 'undefined' ? d.voltage : 0;
-        gI.value = typeof d.current !== 'undefined' ? d.current : 0;
+        // Mengambil key yang sudah sama persis dengan yang dikirim ESP32
+        gV.value = d.voltage || 0; 
+        gI.value = d.current || 0; 
+        gP.value = d.power_nyata || 0; 
+        gS.value = d.power_semu || 0;
         
-        // Logika pengambil data daya yang paling terakhir (Mencegah salah baca key lama)
-        gP.value = typeof d.power_nyata !== 'undefined' ? d.power_nyata : (d.power || 0);
-        gS.value = typeof d.power_semu !== 'undefined' ? d.power_semu : 0;
-
-        // Update indikator UI
         document.getElementById('alert-text').innerText = "SISTEM " + (d.status || "UNKNOWN");
         document.querySelector('.status-box').style.borderLeftColor = 
             d.status === 'NORMAL' ? '#22c55e' : (d.status === 'WASPADA' ? '#f59e0b' : '#ef4444');
     }
 });
 
-// --- FIX: LOAD HISTORY DATA ---
+// --- LOAD HISTORY DATA (Murni Sinkron dengan Database) ---
 document.getElementById('btn-load-hist').onclick = () => {
     const dateStr = document.getElementById('select-date').value;
     if(!dateStr) return alert("Pilih tanggal terlebih dahulu!");
@@ -98,7 +95,7 @@ document.getElementById('btn-load-hist').onclick = () => {
             const v=[], a=[], p=[], s=[];
             for(let hr=0; hr<24; hr++){
                 const k = String(hr).padStart(2, '0');
-                // Paksa chart menarik data terbaru yang spesifik sesuai key ESP32 terbaru (v, a, p, s)
+                // Menarik data histori sesuai struktur v, a, p, s dari ESP32
                 v.push(h[k]?.v ?? null); 
                 a.push(h[k]?.a ?? null); 
                 p.push(h[k]?.p ?? null); 
@@ -108,7 +105,7 @@ document.getElementById('btn-load-hist').onclick = () => {
             chartI.data.datasets[0].data = a; chartI.update();
             chartP.data.datasets[0].data = p; chartP.update();
             chartS.data.datasets[0].data = s; chartS.update();
-            alert("Riwayat daya nyata dan semu berhasil dimuat!");
+            alert("Riwayat berhasil dimuat!");
         } else {
             alert("Tidak ada data riwayat untuk tanggal tersebut.");
         }
