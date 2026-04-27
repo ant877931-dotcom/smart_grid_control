@@ -12,21 +12,27 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // --- GAUGE BUILDER (Ukuran Diperbesar ke 240px) ---
+// --- GAUGE BUILDER (TEMA BIRU NEON) ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
-    colorPlate: "#fff", colorMajorTicks: "#444", colorMinorTicks: "#666",
-    colorTitle: color, colorNumbers: "#444", colorNeedle: color, colorNeedleEnd: color,
-    borders: true, borderOuterWidth: 10, colorBorderOuter: "#f8fafc",
-    needleType: "arrow", needleWidth: 3, valueBox: true,
-    colorValueText: "#fff", colorValueBoxRect: "#888",
+    
+    /* Latar Belakang Speedometer Biru Neon */
+    colorPlate: "#08f7fe", 
+    
+    /* Menggelapkan angka & garis agar terbaca di atas warna neon */
+    colorMajorTicks: "#001e36", colorMinorTicks: "#001e36",
+    colorTitle: "#001e36", colorNumbers: "#001e36", 
+    colorNeedle: "#001e36", colorNeedleEnd: "#001e36", // Jarum warna gelap
+    
+    borders: true, borderOuterWidth: 10, colorBorderOuter: "#e2e8f0",
+    needleType: "arrow", needleWidth: 4, valueBox: true,
+    
+    /* Warna kotak nilai di bawah jarum */
+    colorValueText: "#08f7fe", colorValueBoxRect: "#001e36",
+    
     animationDuration: 1000, animationRule: "linear"
 }).draw();
-
-const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#2563eb');
-const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#10b981');
-const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#f59e0b');
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#8b5cf6');
 
 // --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
