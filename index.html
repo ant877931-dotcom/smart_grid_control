@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Grid Monitor - Pro Edition</title>
+    <title>Smart Grid Monitor - Integrated</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
@@ -12,49 +12,82 @@
     <div class="dashboard-container">
         <header>
             <div class="brand">
-                <h1>⚡ SMART-GRID <span style="color:#2563eb">MONITOR</span></h1>
+                <h1>⚡ SMART-GRID <span class="accent-blue">MONITOR</span></h1>
                 <div id="live-clock">--:--:--</div>
             </div>
             <div class="header-actions">
-                <button id="btn-toggle-settings" class="btn-outline">⚙️ PARAMETER</button>
+                <button id="btn-toggle-settings" class="btn-outline">⚙️ CONFIG</button>
+                <div id="status-badge" class="badge-online">ONLINE</div>
             </div>
         </header>
 
         <section class="gauge-grid">
-            <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label">TEGANGAN (V)</div></div>
-            <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label">ARUS (A)</div></div>
-            <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label">DAYA NYATA (WATT)</div></div>
-            <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label">DAYA SEMU (VA)</div></div>
+            <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label lbl-v">TEGANGAN (V)</div></div>
+            <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label lbl-i">ARUS (A)</div></div>
+            <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label lbl-p">DAYA NYATA (W)</div></div>
+            <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label lbl-s">DAYA SEMU (VA)</div></div>
         </section>
 
-        <section id="settings-panel" class="settings-card hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center">
-                <h3>⚙️ Batas Proteksi Fuzzy</h3>
-                <button id="btn-save-settings" class="btn-primary">SIMPAN KE ALAT</button>
+        <section id="settings-panel" class="card settings-card hidden">
+            <div class="settings-header">
+                <h3>⚙️ Konfigurasi Parameter Proteksi</h3>
+                <button id="btn-save-settings" class="btn-primary">SIMPAN KE FIREBASE</button>
             </div>
             <div class="settings-grid">
                 <div class="config-group">
-                    <label>Rentang Aman Normal (V)</label>
-                    <div class="input-range-box">
-                        <input type="number" id="v-aman-min" value="198">
-                        <span class="range-sep">-</span>
-                        <input type="number" id="v-aman-max" value="231">
+                    <span class="group-title">Rentang Aman</span>
+                    <div class="form-group">
+                        <label>Min/Max Normal (V)</label>
+                        <div class="input-range-box">
+                            <input type="number" id="v-aman-min" value="198">
+                            <span class="range-sep">-</span>
+                            <input type="number" id="v-aman-max" value="231">
+                        </div>
                     </div>
                 </div>
                 <div class="config-group">
-                    <label>Waspada Bawah/Atas (V)</label>
-                    <div class="input-range-box">
-                        <input type="number" id="v-waspada-l" value="188">
-                        <span class="range-sep">|</span>
-                        <input type="number" id="v-waspada-h" value="241">
+                    <span class="group-title">Waspada & Bahaya</span>
+                    <div class="form-group">
+                        <label>Batas Bawah (Waspada / Bahaya)</label>
+                        <div class="input-range-box">
+                            <input type="number" id="v-waspada-l" value="188">
+                            <span class="range-sep">/</span>
+                            <input type="number" id="v-danger-l" value="170">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Batas Atas (Waspada / Bahaya)</label>
+                        <div class="input-range-box">
+                            <input type="number" id="v-waspada-h" value="241">
+                            <span class="range-sep">/</span>
+                            <input type="number" id="v-danger-h" value="250">
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer class="status-box">
-            <small>SISTEM STATUS</small>
-            <h2 id="alert-text">MENGHUBUNGKAN...</h2>
+        <section class="history-controls">
+            <div class="date-loader">
+                <input type="date" id="select-date">
+                <button id="btn-load-hist" class="btn-primary">MUAT RIWAYAT</button>
+            </div>
+        </section>
+
+        <section class="charts-grid">
+            <div class="chart-card"><h4>Voltage Log (V)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-v"></canvas></div></div></div>
+            <div class="chart-card"><h4>Current Log (A)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
+            <div class="chart-card"><h4>Real Power Log (W)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-p"></canvas></div></div></div>
+            <div class="chart-card"><h4>Apparent Power Log (VA)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-s"></canvas></div></div></div>
+        </section>
+
+        <footer class="alert-footer">
+            <div id="alert-box" class="status-box">
+                <div class="alert-info">
+                    <small>STATUS PROTEKSI</small>
+                    <h2 id="alert-text">MENGHUBUNGKAN...</h2>
+                </div>
+            </div>
         </footer>
     </div>
     <script type="module" src="app.js"></script>
