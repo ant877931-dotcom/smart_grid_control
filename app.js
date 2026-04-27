@@ -11,45 +11,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER (TEMA DARK DENGAN LED WARNA KARAKTER) ---
+// --- GAUGE BUILDER (TEMA GELAP LED) ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     
-    // Latar Piringan Gelap (Agar warna teks cerah tidak menusuk mata)
+    // Latar Piringan Hitam Pekat agar nyaman di mata
     colorPlate: "#0b1120", 
     
-    // Teks Judul dan Nilai mengikuti warna Karakteristik
+    // Warna Teks, Nilai, dan Batas mengikuti Karakter
     colorTitle: color, 
     colorValueText: color, 
-    
-    // Angka skala abu-abu, sedangkan garis batas mengikuti warna karakter
-    colorNumbers: "#cbd5e1", 
     colorMajorTicks: color, colorMinorTicks: color,
     
-    // Jarum menggunakan warna karakter
+    // Angka penunjuk abu-abu gelap
+    colorNumbers: "#cbd5e1", 
+    
+    // Jarum warna karakter
     colorNeedle: color, colorNeedleEnd: color,
     colorValueBoxRect: "#1e293b",
     
     borders: true, borderOuterWidth: 10, colorBorderOuter: "#1e293b",
     needleType: "arrow", needleWidth: 4, valueBox: true,
-    
     animationDuration: 1000, animationRule: "linear"
 }).draw();
 
-// Inisialisasi dengan Karakter Warna yang Tepat
-const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8'); // Biru
-const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); // Hijau
+// Inisialisasi dengan warna Karakter yang Nyaman di Mata Gelap
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8'); // Biru Muda
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); // Hijau Terang
 const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#fbbf24'); // Kuning Emas
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu
+const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu Terang
 
-// Warna Karakter (Biru, Hijau, Emas, Ungu)
-const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8'); // Biru V
-const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); // Hijau A
-const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#fbbf24'); // Emas W
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu VA
-
-// --- CHART BUILDER (Warna Line Chart Mengikuti Karakter) ---
+// --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { 
@@ -60,7 +53,7 @@ const createChart = (id, label, color) => new Chart(document.getElementById(id).
     },
     options: { 
         responsive: true, maintainAspectRatio: false,
-        color: '#f8fafc', 
+        color: '#f8fafc', // Teks legenda putih
         scales: {
             x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, 
             y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
@@ -73,28 +66,24 @@ const chartI = createChart('chart-i', 'Current (A)', '#34d399');
 const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
 const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
-// --- CONFIGURATION LOGIC ---
+// --- SMART CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
 const btnToggle = document.getElementById('btn-toggle-settings');
 
-// 1. Logika Buka/Tutup Eksplisit dengan Perubahan Tombol (Visual Feedback)
 btnToggle.onclick = () => {
     if (setPanel.classList.contains('hidden')) {
-        // Jika sedang tertutup, BUKA panel
         setPanel.classList.remove('hidden');
         btnToggle.innerHTML = '❌ TUTUP';
-        btnToggle.style.borderColor = '#ef4444'; // Ubah garis tombol jadi merah
-        btnToggle.style.color = '#ef4444';       // Ubah teks jadi merah
+        btnToggle.style.borderColor = '#ef4444'; 
+        btnToggle.style.color = '#ef4444';       
     } else {
-        // Jika sedang terbuka, TUTUP panel
         setPanel.classList.add('hidden');
         btnToggle.innerHTML = '⚙️ CONFIG';
-        btnToggle.style.borderColor = ''; // Kembalikan ke warna CSS asli
-        btnToggle.style.color = '';       // Kembalikan ke warna CSS asli
+        btnToggle.style.borderColor = ''; 
+        btnToggle.style.color = '';       
     }
 };
 
-// Tarik data konfigurasi dari Firebase
 onValue(ref(db, 'SmartGrid/Settings'), (snap) => {
     const s = snap.val();
     if(s) {
@@ -107,7 +96,6 @@ onValue(ref(db, 'SmartGrid/Settings'), (snap) => {
     }
 });
 
-// Simpan data konfigurasi ke Firebase
 document.getElementById('btn-save-settings').onclick = () => {
     const dataSet = {
         v_aman_min: parseFloat(document.getElementById('v-aman-min').value),
@@ -120,15 +108,12 @@ document.getElementById('btn-save-settings').onclick = () => {
     
     update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => {
         alert("Konfigurasi Berhasil Disimpan!");
-        
-        // 2. AUTO-CLOSE: Otomatis tutup panel setelah berhasil disave
+        // Auto-close setelah save
         setPanel.classList.add('hidden');
         btnToggle.innerHTML = '⚙️ CONFIG';
         btnToggle.style.borderColor = '';
         btnToggle.style.color = '';
-    }).catch((err) => {
-        alert("Gagal menyimpan konfigurasi: " + err);
-    });
+    }).catch(err => alert("Gagal menyimpan konfigurasi: " + err));
 };
 
 // --- REAL-TIME MONITORING ---
