@@ -66,36 +66,41 @@ const chartI = createChart('chart-i', 'Current (A)', '#34d399');
 const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
 const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
-// --- SMART CONFIGURATION LOGIC ---
+// --- CONFIGURATION LOGIC (REVISED & BULLETPROOF) ---
 const setPanel = document.getElementById('settings-panel');
 const btnToggle = document.getElementById('btn-toggle-settings');
 
+// Fungsi untuk menutup panel secara paksa
+const closeConfig = () => {
+    setPanel.classList.add('hidden');
+    btnToggle.innerHTML = '⚙️ CONFIG';
+    btnToggle.style.color = '';
+    btnToggle.style.borderColor = '';
+};
+
+// Fungsi untuk membuka panel secara paksa
+const openConfig = () => {
+    setPanel.classList.remove('hidden');
+    btnToggle.innerHTML = '❌ TUTUP';
+    btnToggle.style.color = '#ef4444';
+    btnToggle.style.borderColor = '#ef4444';
+};
+
 btnToggle.onclick = () => {
+    // Memeriksa apakah panel memiliki class 'hidden'
     if (setPanel.classList.contains('hidden')) {
-        setPanel.classList.remove('hidden');
-        btnToggle.innerHTML = '❌ TUTUP';
-        btnToggle.style.borderColor = '#ef4444'; 
-        btnToggle.style.color = '#ef4444';       
+        openConfig();
     } else {
-        setPanel.classList.add('hidden');
-        btnToggle.innerHTML = '⚙️ CONFIG';
-        btnToggle.style.borderColor = ''; 
-        btnToggle.style.color = '';       
+        closeConfig();
     }
 };
 
-onValue(ref(db, 'SmartGrid/Settings'), (snap) => {
-    const s = snap.val();
-    if(s) {
-        document.getElementById('v-aman-min').value = s.v_aman_min || 198;
-        document.getElementById('v-aman-max').value = s.v_aman_max || 231;
-        document.getElementById('v-waspada-l').value = s.v_waspada_l || 188;
-        document.getElementById('v-waspada-h').value = s.v_waspada_h || 241;
-        document.getElementById('v-danger-l').value = s.v_danger_l || 170;
-        document.getElementById('v-danger-h').value = s.v_danger_h || 250;
-    }
+// Pastikan panel tertutup saat pertama kali load
+window.addEventListener('load', () => {
+    closeConfig();
 });
 
+// Otomatis tutup setelah simpan berhasil
 document.getElementById('btn-save-settings').onclick = () => {
     const dataSet = {
         v_aman_min: parseFloat(document.getElementById('v-aman-min').value),
@@ -108,12 +113,8 @@ document.getElementById('btn-save-settings').onclick = () => {
     
     update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => {
         alert("Konfigurasi Berhasil Disimpan!");
-        // Auto-close setelah save
-        setPanel.classList.add('hidden');
-        btnToggle.innerHTML = '⚙️ CONFIG';
-        btnToggle.style.borderColor = '';
-        btnToggle.style.color = '';
-    }).catch(err => alert("Gagal menyimpan konfigurasi: " + err));
+        closeConfig(); // Gunakan fungsi eksplisit
+    }).catch(err => alert("Gagal: " + err));
 };
 
 // --- REAL-TIME MONITORING ---
