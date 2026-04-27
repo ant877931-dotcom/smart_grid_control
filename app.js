@@ -69,8 +69,26 @@ const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
 // --- CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
-document.getElementById('btn-toggle-settings').onclick = () => setPanel.classList.toggle('hidden');
+const btnToggle = document.getElementById('btn-toggle-settings');
 
+// 1. Logika Buka/Tutup Eksplisit dengan Perubahan Tombol (Visual Feedback)
+btnToggle.onclick = () => {
+    if (setPanel.classList.contains('hidden')) {
+        // Jika sedang tertutup, BUKA panel
+        setPanel.classList.remove('hidden');
+        btnToggle.innerHTML = '❌ TUTUP';
+        btnToggle.style.borderColor = '#ef4444'; // Ubah garis tombol jadi merah
+        btnToggle.style.color = '#ef4444';       // Ubah teks jadi merah
+    } else {
+        // Jika sedang terbuka, TUTUP panel
+        setPanel.classList.add('hidden');
+        btnToggle.innerHTML = '⚙️ CONFIG';
+        btnToggle.style.borderColor = ''; // Kembalikan ke warna CSS asli
+        btnToggle.style.color = '';       // Kembalikan ke warna CSS asli
+    }
+};
+
+// Tarik data konfigurasi dari Firebase
 onValue(ref(db, 'SmartGrid/Settings'), (snap) => {
     const s = snap.val();
     if(s) {
@@ -83,6 +101,7 @@ onValue(ref(db, 'SmartGrid/Settings'), (snap) => {
     }
 });
 
+// Simpan data konfigurasi ke Firebase
 document.getElementById('btn-save-settings').onclick = () => {
     const dataSet = {
         v_aman_min: parseFloat(document.getElementById('v-aman-min').value),
@@ -92,7 +111,18 @@ document.getElementById('btn-save-settings').onclick = () => {
         v_danger_l: parseFloat(document.getElementById('v-danger-l').value),
         v_danger_h: parseFloat(document.getElementById('v-danger-h').value)
     };
-    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Konfigurasi Berhasil Disimpan!"));
+    
+    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => {
+        alert("Konfigurasi Berhasil Disimpan!");
+        
+        // 2. AUTO-CLOSE: Otomatis tutup panel setelah berhasil disave
+        setPanel.classList.add('hidden');
+        btnToggle.innerHTML = '⚙️ CONFIG';
+        btnToggle.style.borderColor = '';
+        btnToggle.style.color = '';
+    }).catch((err) => {
+        alert("Gagal menyimpan konfigurasi: " + err);
+    });
 };
 
 // --- REAL-TIME MONITORING ---
