@@ -97,10 +97,7 @@ header {
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.gauge-card {
-    padding: 30px; 
-    text-align: center; 
-}
+.gauge-card { padding: 30px; text-align: center; }
 
 .gauge-card:hover, .chart-card:hover { 
     transform: translateY(-5px); 
@@ -111,7 +108,7 @@ header {
 .gauge-label { 
     font-size: 0.95rem; font-weight: 800; margin-top: 25px; 
     letter-spacing: 0.5px; text-transform: uppercase;
-    color: #f8fafc !important; /* Teks putih di atas Navy */
+    color: #f8fafc !important; /* Teks putih terang di atas Navy Card space */
 }
 
 /* Charts Area Navy */
