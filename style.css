@@ -1,27 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    /* Palet Tema: Ocean / Premium Blue */
-    --bg-main: #eff6ff;        /* Biru es sangat muda untuk background */
-    --card-bg: #ffffff;        /* Putih bersih untuk kartu */
-    --border-light: #dbeafe;   /* Garis batas (border) kebiruan */
-    --text-main: #1e3a8a;      /* Teks utama: Biru Dongker (Navy) */
-    --text-muted: #60a5fa;     /* Teks label: Biru terang */
-    --accent-blue: #2563eb;    /* Biru utama (Tetap) */
-    --accent-hover: #1d4ed8;   
+    /* Palet Tema: Cyber Ocean */
+    --bg-main: #eff6ff;        /* Biru es muda untuk background */
+    --card-bg: #ffffff;        /* Putih bersih untuk header/config */
+    --border-light: #dbeafe;   
+    --text-main: #1e3a8a;      /* Teks Utama: Navy */
+    --text-muted: #60a5fa;     
+    --accent-blue: #2563eb;    
     --accent-green: #10b981;
-    --accent-orange: #f59e0b;
-    --accent-purple: #8b5cf6;
-    --danger: #ef4444;
-    
-    /* Bayangan Modern (Soft Blue Shadows) */
-    --shadow-sm: 0 1px 2px 0 rgba(37, 99, 235, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(37, 99, 235, 0.05);
-    --shadow-card: 0 8px 24px rgba(37, 99, 235, 0.08); /* Shadow sedikit biru */
-    
-    /* Radius Melengkung */
     --radius-md: 10px;
     --radius-lg: 16px;
+    --shadow-card: 0 8px 24px rgba(37, 99, 235, 0.08);
 }
 
 body { 
@@ -34,6 +24,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Lebar Dashboard 20% Lebih Lega */
 .dashboard-container { 
     max-width: 1440px; 
     margin: 0 auto; 
@@ -41,7 +32,7 @@ body {
     box-sizing: border-box; 
 }
 
-/* ================= HEADER ================= */
+/* ================= HEADER & SETTINGS (CLEAN WHITE) ================= */
 header { 
     background: var(--card-bg); 
     padding: 20px 30px; 
@@ -53,256 +44,96 @@ header {
     box-shadow: var(--shadow-card); 
 }
 
-.brand h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.accent-blue {
-    background: linear-gradient(135deg, var(--accent-blue), #38bdf8); /* Gradien biru cerah */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-#live-clock {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    margin-top: 4px;
-    margin-left: 35px;
-}
+.brand h1 { margin: 0; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.accent-blue { background: linear-gradient(135deg, var(--accent-blue), #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+#live-clock { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-left: 35px; }
 
 .header-actions { display: flex; align-items: center; gap: 20px; }
 
-/* Badge Online Animasi */
 .badge-online {
-    background: #dcfce7;
-    color: #166534;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    background: #dcfce7; color: #166534; padding: 6px 14px; border-radius: 50px;
+    font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 8px;
     box-shadow: inset 0 0 0 1px rgba(22, 101, 52, 0.1);
 }
 .badge-online::before {
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: var(--accent-green);
-    border-radius: 50%;
-    box-shadow: 0 0 8px var(--accent-green);
-    animation: pulse 2s infinite;
+    content: ''; display: inline-block; width: 8px; height: 8px;
+    background: var(--accent-green); border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-green); animation: pulse 2s infinite;
 }
-
 @keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
     70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
     100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
-/* ================= TOMBOL ================= */
-.btn-outline { 
-    background: transparent; 
-    border: 2px solid var(--border-light); 
-    color: var(--accent-blue); 
-    padding: 10px 20px; 
-    border-radius: var(--radius-md); 
-    cursor: pointer; 
-    font-weight: 600; 
-    font-size: 0.85rem;
-    transition: all 0.3s ease;
-}
-.btn-outline:hover {
-    border-color: var(--accent-blue);
-    background: #eff6ff;
-}
+.btn-outline { background: transparent; border: 2px solid var(--border-light); color: var(--accent-blue); padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease; }
+.btn-outline:hover { border-color: var(--accent-blue); background: #eff6ff; }
+.btn-primary { background: linear-gradient(135deg, var(--accent-blue), #1e40af); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3); }
 
-.btn-primary { 
-    background: linear-gradient(135deg, var(--accent-blue), #1e40af); 
-    color: white; 
-    border: none; 
-    padding: 12px 24px; 
-    border-radius: var(--radius-md); 
-    cursor: pointer; 
-    font-weight: 600; 
-    font-size: 0.85rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-}
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
-}
+/* Config Panel */
+.settings-card { background: var(--card-bg); border-radius: var(--radius-lg); padding: 35px; margin-bottom: 35px; box-shadow: var(--shadow-card); }
+.settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; }
+.settings-header h3 { margin: 0; color: var(--text-main); font-weight: 700; }
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; } 
+.config-group { display: flex; flex-direction: column; gap: 16px; padding: 25px; background: #f8fafc; border-radius: var(--radius-md); border: 1px solid var(--border-light); }
+.group-title { font-size: 0.75rem; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+.input-range-box { display: flex; align-items: center; background: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-light); transition: border-color 0.3s; }
+.input-range-box:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.input-range-box input { border: none !important; padding: 12px; width: 100%; text-align: center; font-size: 1rem; font-weight: 600; outline: none; color: var(--accent-blue); background: transparent; }
+.range-sep { padding: 0 15px; color: var(--text-muted); font-weight: bold; background: #eff6ff; height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border-light); border-right: 1px solid var(--border-light); }
+.hidden { display: none !important; }
 
-/* ================= GAUGE GRID (NEON GLOW) ================= */
-.gauge-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
-    gap: 30px; 
-    background: transparent; 
-    margin-bottom: 30px; 
-}
+/* ================= CYBERPUNK NEON GLOW CARDS ================= */
+.gauge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-bottom: 35px; }
 
-/* Background Speedometer Menjadi Biru Neon Bercahaya */
 .gauge-card { 
-    background: #08f7fe; /* Biru Neon */
+    background: #08f7fe; 
     padding: 30px; 
     border-radius: var(--radius-lg); 
     border: 2px solid #ffffff;
     text-align: center; 
-    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); /* Efek Cahaya / Glow */
+    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.gauge-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 45px rgba(8, 247, 254, 0.9); /* Glow membesar saat disorot */
-}
+.gauge-card:hover { transform: translateY(-5px); box-shadow: 0 0 45px rgba(8, 247, 254, 0.9); }
 
-/* Teks di bawah speedometer digelapkan agar kontras */
 .gauge-label { 
-    font-size: 0.95rem; 
-    font-weight: 800; 
-    margin-top: 20px; 
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: #001529 !important; /* Navy gelap */
+    font-size: 0.95rem; font-weight: 800; margin-top: 25px; 
+    letter-spacing: 0.5px; text-transform: uppercase;
+    color: #001529 !important; /* Teks gelap di atas neon terang */
 }
 
-/* ================= CHARTS (NEON GLOW) ================= */
-.charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
+/* History Controls */
+.history-controls { margin-bottom: 25px; }
+.date-loader { display: flex; gap: 15px; background: var(--card-bg); padding: 15px; border-radius: var(--radius-md); align-items: center; width: fit-content; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
+.date-loader input { padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border-light); outline: none; font-size: 0.9rem; font-weight: 600; color: var(--text-main); cursor: pointer; }
+.date-loader input:focus { border-color: var(--accent-blue); }
 
-/* Background Line Chart Menjadi Biru Neon Bercahaya */
+/* Charts Area Neon Glow */
+.charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
 .chart-card { 
-    background: #08f7fe; /* Biru Neon */
+    background: #08f7fe; 
     border-radius: var(--radius-lg); 
     padding: 25px; 
     border: 2px solid #ffffff;
-    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); /* Efek Cahaya / Glow */
+    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.chart-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 45px rgba(8, 247, 254, 0.9);
-}
+.chart-card:hover { transform: translateY(-3px); box-shadow: 0 0 45px rgba(8, 247, 254, 0.9); }
+.chart-card h4 { margin: 0 0 20px 0; color: #001529 !important; font-size: 1.1rem; font-weight: 800; }
 
-.chart-card h4 { 
-    margin: 0 0 20px 0; 
-    color: #001529 !important; /* Judul chart warna navy gelap */
-    font-size: 1.1rem; 
-    font-weight: 800; 
-}
-
-/* ================= SETTINGS PANEL ================= */
-.settings-card { 
-    background: var(--card-bg); 
-    border-radius: var(--radius-lg); 
-    padding: 35px; 
-    margin-bottom: 35px; 
-    box-shadow: var(--shadow-card);
-}
-.settings-header { 
-    display: flex; justify-content: space-between; align-items: center; 
-    margin-bottom: 25px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; 
-}
-.settings-header h3 { margin: 0; color: var(--text-main); font-weight: 700; }
-.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; } 
-
-.config-group { 
-    display: flex; flex-direction: column; gap: 16px; padding: 25px; 
-    background: #f8fafc; /* Latar panel config sedikit kontras dengan background utama */
-    border-radius: var(--radius-md); 
-    border: 1px solid var(--border-light); 
-}
-.group-title { font-size: 0.75rem; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
-
-.form-group { display: flex; flex-direction: column; gap: 8px; }
-.form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
-
-.input-range-box { 
-    display: flex; align-items: center; background: var(--card-bg); 
-    border-radius: 8px; overflow: hidden; 
-    box-shadow: inset 0 1px 3px rgba(37,99,235,0.05);
-    border: 1px solid var(--border-light);
-    transition: border-color 0.3s;
-}
-.input-range-box:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-.input-range-box input { 
-    border: none !important; padding: 12px; width: 100%; 
-    text-align: center; font-size: 1rem; font-weight: 600; outline: none; 
-    color: var(--accent-blue); background: transparent;
-}
-.range-sep { 
-    padding: 0 15px; color: var(--text-muted); font-weight: bold; 
-    background: #eff6ff; height: 100%; display: flex; align-items: center; 
-    border-left: 1px solid var(--border-light); border-right: 1px solid var(--border-light); 
-}
-
-.hidden { display: none !important; }
-
-/* ================= HISTORY CONTROLS ================= */
-.history-controls { margin-bottom: 25px; }
-.date-loader { 
-    display: flex; gap: 15px; background: var(--card-bg); 
-    padding: 15px; border-radius: var(--radius-md); 
-    align-items: center; width: fit-content; 
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-light);
-}
-.date-loader input { 
-    padding: 10px 15px; border-radius: 6px; 
-    border: 1px solid var(--border-light); outline: none; 
-    font-size: 0.9rem; font-family: 'Inter'; font-weight: 600;
-    color: var(--text-main); cursor: pointer;
-}
-.date-loader input:focus { border-color: var(--accent-blue); }
-
-/* ================= CHARTS ================= */
-.charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
-.chart-card { 
-    background: var(--card-bg); border-radius: var(--radius-lg); 
-    padding: 25px; box-shadow: var(--shadow-card); 
-}
-.chart-card h4 { margin: 0 0 20px 0; color: var(--text-main); font-size: 1.1rem; font-weight: 700; }
-
-.scroll-wrapper { 
-    overflow-x: auto; 
-    border: 1px solid var(--border-light); 
-    border-radius: var(--radius-md); 
-    width: 100%; 
-    background: #f8fafc;
-}
+.scroll-wrapper { overflow-x: auto; border: 1px solid rgba(0, 21, 41, 0.1); border-radius: var(--radius-md); width: 100%; background: #e0faff; }
 .inner-chart { min-width: 900px; height: 350px; padding: 15px; } 
 
-/* Custom Scrollbar for Charts (Biru Muda) */
 .scroll-wrapper::-webkit-scrollbar { height: 8px; }
-.scroll-wrapper::-webkit-scrollbar-track { background: #eff6ff; border-radius: 4px;}
-.scroll-wrapper::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 4px; }
-.scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #93c5fd; }
+.scroll-wrapper::-webkit-scrollbar-track { background: #cffafe; border-radius: 4px;}
+.scroll-wrapper::-webkit-scrollbar-thumb { background: #67e8f9; border-radius: 4px; }
+.scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
 
 /* ================= FOOTER STATUS ================= */
-.status-box { 
-    background: var(--card-bg); padding: 25px 35px; 
-    border-radius: var(--radius-lg); 
-    border-left: 12px solid var(--accent-green); 
-    box-shadow: var(--shadow-card); 
-    display: flex; align-items: center;
-    transition: border-color 0.3s ease;
-}
-.alert-info small { 
-    color: var(--text-muted); font-weight: 800; 
-    letter-spacing: 1px; font-size: 0.75rem; 
-}
-.alert-info h2 { 
-    margin: 8px 0 0 0; font-size: 2rem; font-weight: 800; 
-    color: var(--text-main); letter-spacing: -0.5px;
-}
+.status-box { background: var(--card-bg); padding: 25px 35px; border-radius: var(--radius-lg); border-left: 12px solid var(--accent-green); box-shadow: var(--shadow-card); display: flex; align-items: center; transition: border-color 0.3s ease; }
+.alert-info small { color: var(--text-muted); font-weight: 800; letter-spacing: 1px; font-size: 0.75rem; }
+.alert-info h2 { margin: 8px 0 0 0; font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
