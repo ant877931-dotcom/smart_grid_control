@@ -39,8 +39,8 @@ const buildG = (id, title, max, ticks, color) => new RadialGauge({
 // Inisialisasi dengan warna Karakter yang Nyaman di Mata Gelap
 const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8'); // Biru Muda
 const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); // Hijau Terang
-const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#fbbf24'); // Kuning Emas
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu Terang
+const gP = buildG('gauge-p', 'WATT', 2000, ["0","400","800","1200","1600","2000"], '#fbbf24'); // Kuning Emas
+const gS = buildG('gauge-s', 'VA', 2000, ["0","400","800","1200","1600","2000"], '#a78bfa'); // Ungu Terang
 
 // --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
