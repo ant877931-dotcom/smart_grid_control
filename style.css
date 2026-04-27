@@ -8,7 +8,7 @@
 
 body { background: var(--bg-main); font-family: 'Inter', sans-serif; margin: 0; overflow-y: auto; overflow-x: hidden; }
 
-/* FIX: Dashboard dilebarkan sekitar 20% (Max 1440px) agar tidak berdempetan */
+/* FIX: Layout diperlebar menjadi 1440px agar tidak berdempetan */
 .dashboard-container { 
     max-width: 1440px; 
     margin: 0 auto; 
@@ -25,7 +25,7 @@ header { background: var(--white); padding: 15px 25px; border-radius: 12px; disp
 /* Config Section */
 .settings-card { background: var(--white); border-radius: 12px; padding: 30px; border: 1px solid var(--border); margin-bottom: 30px; }
 .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--bg-main); padding-bottom: 15px; }
-.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; } /* Jarak config diperlega */
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; } 
 .config-group { display: flex; flex-direction: column; gap: 16px; padding: 20px; background: #fdfdfd; border-radius: 8px; border: 1px solid #f1f5f9; }
 .group-title { font-size: 0.8rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
 
@@ -36,11 +36,11 @@ header { background: var(--white); padding: 15px 25px; border-radius: 12px; disp
 .range-sep { padding: 0 15px; color: #cbd5e1; font-weight: bold; background: #f8fafc; height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
 .hidden { display: none; }
 
-/* Gauge Grid: Diperlebar dan gap ditambahkan */
+/* Gauge Grid: Diperlebar dan gap diperbesar */
 .gauge-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
-    gap: 30px; /* Jarak antar kotak diperbesar */
+    gap: 30px; 
     background: transparent; 
     margin-bottom: 30px; 
 }
@@ -66,7 +66,7 @@ header { background: var(--white); padding: 15px 25px; border-radius: 12px; disp
 .chart-card h4 { margin: 0 0 15px 0; color: var(--text-label); font-size: 1rem; }
 
 .scroll-wrapper { overflow-x: auto; border: 1px solid #f1f5f9; border-radius: 8px; width: 100%; }
-.inner-chart { min-width: 900px; height: 350px; padding: 10px; } /* Chart diperbesar sedikit */
+.inner-chart { min-width: 900px; height: 350px; padding: 10px; } 
 
 /* Footer Status */
 .status-box { background: var(--white); padding: 25px; border-radius: 12px; border-left: 10px solid #22c55e; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
