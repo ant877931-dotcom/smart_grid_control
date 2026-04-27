@@ -11,40 +11,48 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER (Ukuran Diperbesar ke 240px) ---
-// --- GAUGE BUILDER (TEMA BIRU NEON) ---
-const buildG = (id, title, max, ticks, color) => new RadialGauge({
+// --- GAUGE BUILDER (TEMA NEON BLUE) ---
+const buildG = (id, title, max, ticks) => new RadialGauge({
     renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     
-    /* Latar Belakang Speedometer Biru Neon */
+    // Warna Background Neon
     colorPlate: "#08f7fe", 
     
-    /* Menggelapkan angka & garis agar terbaca di atas warna neon */
-    colorMajorTicks: "#001e36", colorMinorTicks: "#001e36",
-    colorTitle: "#001e36", colorNumbers: "#001e36", 
-    colorNeedle: "#001e36", colorNeedleEnd: "#001e36", // Jarum warna gelap
+    // Warna Font dan Jarum Kontras Gelap (Navy)
+    colorMajorTicks: "#001529", colorMinorTicks: "#001529",
+    colorTitle: "#001529", colorNumbers: "#001529", 
+    colorNeedle: "#001529", colorNeedleEnd: "#001529",
     
     borders: true, borderOuterWidth: 10, colorBorderOuter: "#e2e8f0",
     needleType: "arrow", needleWidth: 4, valueBox: true,
     
-    /* Warna kotak nilai di bawah jarum */
-    colorValueText: "#08f7fe", colorValueBoxRect: "#001e36",
-    
+    // Warna Value Box
+    colorValueText: "#08f7fe", colorValueBoxRect: "#001529",
     animationDuration: 1000, animationRule: "linear"
 }).draw();
 
-// --- CHART BUILDER ---
-const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"]);
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"]);
+const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"]);
+const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"]);
+
+// --- CHART BUILDER (Garis Biru Gelap di Atas Latar Neon) ---
+const createChart = (id, label) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
-    data: { labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), datasets: [{ label, data: [], borderColor: color, fill: true, backgroundColor: color + '1A', tension: 0.3 }] },
+    data: { 
+        labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), 
+        datasets: [{ 
+            label, data: [], borderColor: '#001529', fill: true, backgroundColor: 'rgba(0, 21, 41, 0.1)', tension: 0.3 
+        }] 
+    },
     options: { responsive: true, maintainAspectRatio: false }
 });
 
-const chartV = createChart('chart-v', 'Voltage (V)', '#2563eb');
-const chartI = createChart('chart-i', 'Current (A)', '#10b981');
-const chartP = createChart('chart-p', 'Real Power (W)', '#f59e0b');
-const chartS = createChart('chart-s', 'Apparent Power (VA)', '#8b5cf6');
+const chartV = createChart('chart-v', 'Voltage (V)');
+const chartI = createChart('chart-i', 'Current (A)');
+const chartP = createChart('chart-p', 'Real Power (W)');
+const chartS = createChart('chart-s', 'Apparent Power (VA)');
 
 // --- CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
@@ -71,14 +79,13 @@ document.getElementById('btn-save-settings').onclick = () => {
         v_danger_l: parseFloat(document.getElementById('v-danger-l').value),
         v_danger_h: parseFloat(document.getElementById('v-danger-h').value)
     };
-    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Konfigurasi Berhasil Disimpan!"));
+    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Konfigurasi Tersimpan dan Terkirim ke ESP32!"));
 };
 
-// --- REAL-TIME MONITORING (Murni Sinkron dengan Database) ---
+// --- REAL-TIME MONITORING ---
 onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
     const d = snap.val();
     if(d) {
-        // Mengambil key yang sudah sama persis dengan yang dikirim ESP32
         gV.value = d.voltage || 0; 
         gI.value = d.current || 0; 
         gP.value = d.power_nyata || 0; 
@@ -90,7 +97,7 @@ onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
     }
 });
 
-// --- LOAD HISTORY DATA (Murni Sinkron dengan Database) ---
+// --- LOAD HISTORY DATA ---
 document.getElementById('btn-load-hist').onclick = () => {
     const dateStr = document.getElementById('select-date').value;
     if(!dateStr) return alert("Pilih tanggal terlebih dahulu!");
@@ -101,7 +108,6 @@ document.getElementById('btn-load-hist').onclick = () => {
             const v=[], a=[], p=[], s=[];
             for(let hr=0; hr<24; hr++){
                 const k = String(hr).padStart(2, '0');
-                // Menarik data histori sesuai struktur v, a, p, s dari ESP32
                 v.push(h[k]?.v ?? null); 
                 a.push(h[k]?.a ?? null); 
                 p.push(h[k]?.p ?? null); 
