@@ -11,19 +11,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER (TEMA BIRU DONGKER / NAVY) ---
+// --- GAUGE BUILDER (TEMA NAVY + KONTRAST GOLD) ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     
-    // Latar Belakang Biru Dongker
-    colorPlate: "#0f172a", 
+    // Ganti Plate Neon menjadi Kuning Emas Cerah (High Contrast with Navy Card)
+    colorPlate: "#fbbf24", 
     
-    // Teks dan Garis Menjadi Putih Terang/Abu Terang
-    colorMajorTicks: "#cbd5e1", colorMinorTicks: "#cbd5e1",
-    colorNumbers: "#f8fafc", 
+    // Warna Teks & Angka DI ATAS PLATE KUNING menjadi Navy Gelap agar terbaca
+    colorMajorTicks: "#0f172a", colorMinorTicks: "#0f172a",
+    colorNumbers: "#0f172a", 
     
-    // Warna Jarum dan Judul Sesuai Karakteristik (Biru, Hijau, dll)
+    // Judul Gauge dan Jarum menggunakan warna metric passed in (Cerah)
     colorTitle: color, 
     colorNeedle: color, colorNeedleEnd: color,
     
@@ -35,13 +35,13 @@ const buildG = (id, title, max, ticks, color) => new RadialGauge({
     animationDuration: 1000, animationRule: "linear"
 }).draw();
 
-// Inisialisasi dengan warna-warni cerah agar menyala di atas Navy
-const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8');
-const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399');
-const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#fbbf24');
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa');
+// Inisialisasi warna-warni cerah agar menyala di atas Navy Card & Gold Plate Title
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#08f7fe'); // Cyan
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#4ade80'); // Hijau Cerah
+const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#f472b6'); // Pink Cerah
+const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu Cerah
 
-// --- CHART BUILDER (TEMA BIRU DONGKER / NAVY) ---
+// --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { 
@@ -52,17 +52,17 @@ const createChart = (id, label, color) => new Chart(document.getElementById(id).
     },
     options: { 
         responsive: true, maintainAspectRatio: false,
-        color: '#cbd5e1', // Warna teks legenda
+        color: '#f8fafc', // Warna teks legenda
         scales: {
-            x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, // Warna grid & angka koordinat
+            x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, 
             y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
         }
     }
 });
 
-const chartV = createChart('chart-v', 'Voltage (V)', '#38bdf8');
-const chartI = createChart('chart-i', 'Current (A)', '#34d399');
-const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
+const chartV = createChart('chart-v', 'Voltage (V)', '#08f7fe');
+const chartI = createChart('chart-i', 'Current (A)', '#4ade80');
+const chartP = createChart('chart-p', 'Real Power (W)', '#f472b6');
 const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
 // --- CONFIGURATION LOGIC ---
@@ -90,7 +90,7 @@ document.getElementById('btn-save-settings').onclick = () => {
         v_danger_l: parseFloat(document.getElementById('v-danger-l').value),
         v_danger_h: parseFloat(document.getElementById('v-danger-h').value)
     };
-    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Konfigurasi Tersimpan dan Terkirim ke ESP32!"));
+    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Konfigurasi Berhasil Disimpan!"));
 };
 
 // --- REAL-TIME MONITORING ---
