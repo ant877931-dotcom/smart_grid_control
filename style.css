@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    /* Palet Tema: Cyber Ocean */
-    --bg-main: #eff6ff;        /* Biru es muda untuk background */
-    --card-bg: #ffffff;        /* Putih bersih untuk header/config */
+    /* Palet Latar & Header Tetap Ocean Biru Muda */
+    --bg-main: #eff6ff;        
+    --card-bg: #ffffff;        
     --border-light: #dbeafe;   
-    --text-main: #1e3a8a;      /* Teks Utama: Navy */
+    --text-main: #1e3a8a;      
     --text-muted: #60a5fa;     
     --accent-blue: #2563eb;    
     --accent-green: #10b981;
@@ -24,7 +24,6 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Lebar Dashboard 20% Lebih Lega */
 .dashboard-container { 
     max-width: 1440px; 
     margin: 0 auto; 
@@ -32,16 +31,11 @@ body {
     box-sizing: border-box; 
 }
 
-/* ================= HEADER & SETTINGS (CLEAN WHITE) ================= */
+/* ================= HEADER & SETTINGS (PUTIH BERSIH) ================= */
 header { 
-    background: var(--card-bg); 
-    padding: 20px 30px; 
-    border-radius: var(--radius-lg); 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 35px; 
-    box-shadow: var(--shadow-card); 
+    background: var(--card-bg); padding: 20px 30px; border-radius: var(--radius-lg); 
+    display: flex; justify-content: space-between; align-items: center; 
+    margin-bottom: 35px; box-shadow: var(--shadow-card); 
 }
 
 .brand h1 { margin: 0; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
@@ -86,52 +80,54 @@ header {
 .range-sep { padding: 0 15px; color: var(--text-muted); font-weight: bold; background: #eff6ff; height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border-light); border-right: 1px solid var(--border-light); }
 .hidden { display: none !important; }
 
-/* ================= CYBERPUNK NEON GLOW CARDS ================= */
-.gauge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-bottom: 35px; }
-
-.gauge-card { 
-    background: #08f7fe; 
-    padding: 30px; 
-    border-radius: var(--radius-lg); 
-    border: 2px solid #ffffff;
-    text-align: center; 
-    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.gauge-card:hover { transform: translateY(-5px); box-shadow: 0 0 45px rgba(8, 247, 254, 0.9); }
-
-.gauge-label { 
-    font-size: 0.95rem; font-weight: 800; margin-top: 25px; 
-    letter-spacing: 0.5px; text-transform: uppercase;
-    color: #001529 !important; /* Teks gelap di atas neon terang */
-}
-
 /* History Controls */
 .history-controls { margin-bottom: 25px; }
 .date-loader { display: flex; gap: 15px; background: var(--card-bg); padding: 15px; border-radius: var(--radius-md); align-items: center; width: fit-content; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
 .date-loader input { padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border-light); outline: none; font-size: 0.9rem; font-weight: 600; color: var(--text-main); cursor: pointer; }
 .date-loader input:focus { border-color: var(--accent-blue); }
 
-/* Charts Area Neon Glow */
-.charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
-.chart-card { 
-    background: #08f7fe; 
-    border-radius: var(--radius-lg); 
-    padding: 25px; 
-    border: 2px solid #ffffff;
-    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.chart-card:hover { transform: translateY(-3px); box-shadow: 0 0 45px rgba(8, 247, 254, 0.9); }
-.chart-card h4 { margin: 0 0 20px 0; color: #001529 !important; font-size: 1.1rem; font-weight: 800; }
+/* ================= NAVY BLUE CARDS (SPEEDOMETER & CHARTS) ================= */
+.gauge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-bottom: 35px; }
 
-.scroll-wrapper { overflow-x: auto; border: 1px solid rgba(0, 21, 41, 0.1); border-radius: var(--radius-md); width: 100%; background: #e0faff; }
+.gauge-card, .chart-card { 
+    background: #0f172a; /* Biru Dongker / Navy */
+    border-radius: var(--radius-lg); 
+    border: 1px solid #1e293b;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.gauge-card {
+    padding: 30px; 
+    text-align: center; 
+}
+
+.gauge-card:hover, .chart-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.4); 
+    border-color: #334155;
+}
+
+.gauge-label { 
+    font-size: 0.95rem; font-weight: 800; margin-top: 25px; 
+    letter-spacing: 0.5px; text-transform: uppercase;
+    color: #f8fafc !important; /* Teks putih di atas Navy */
+}
+
+/* Charts Area Navy */
+.charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
+.chart-card { padding: 25px; }
+.chart-card h4 { margin: 0 0 20px 0; color: #f8fafc !important; font-size: 1.1rem; font-weight: 800; }
+
+/* Wrapper area grafik lebih gelap untuk kedalaman UI */
+.scroll-wrapper { overflow-x: auto; border: 1px solid #1e293b; border-radius: var(--radius-md); width: 100%; background: #0b1120; }
 .inner-chart { min-width: 900px; height: 350px; padding: 15px; } 
 
+/* Scrollbar Tema Gelap */
 .scroll-wrapper::-webkit-scrollbar { height: 8px; }
-.scroll-wrapper::-webkit-scrollbar-track { background: #cffafe; border-radius: 4px;}
-.scroll-wrapper::-webkit-scrollbar-thumb { background: #67e8f9; border-radius: 4px; }
-.scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
+.scroll-wrapper::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px;}
+.scroll-wrapper::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+.scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #475569; }
 
 /* ================= FOOTER STATUS ================= */
 .status-box { background: var(--card-bg); padding: 25px 35px; border-radius: var(--radius-lg); border-left: 12px solid var(--accent-green); box-shadow: var(--shadow-card); display: flex; align-items: center; transition: border-color 0.3s ease; }
