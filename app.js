@@ -16,14 +16,14 @@ const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     
-    // Latar Piringan Gelap (Agar warna teks tidak menusuk mata)
+    // Latar Piringan Gelap (Agar warna teks cerah tidak menusuk mata)
     colorPlate: "#0b1120", 
     
     // Teks Judul dan Nilai mengikuti warna Karakteristik
     colorTitle: color, 
     colorValueText: color, 
     
-    // Angka skala dibiarkan abu-abu terang agar rapi, garis batas memakai warna karakter
+    // Angka skala abu-abu, sedangkan garis batas mengikuti warna karakter
     colorNumbers: "#cbd5e1", 
     colorMajorTicks: color, colorMinorTicks: color,
     
@@ -36,6 +36,12 @@ const buildG = (id, title, max, ticks, color) => new RadialGauge({
     
     animationDuration: 1000, animationRule: "linear"
 }).draw();
+
+// Inisialisasi dengan Karakter Warna yang Tepat
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8'); // Biru
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); // Hijau
+const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#fbbf24'); // Kuning Emas
+const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu
 
 // Warna Karakter (Biru, Hijau, Emas, Ungu)
 const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8'); // Biru V
