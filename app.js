@@ -11,37 +11,39 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE BUILDER (TEMA NAVY + KONTRAST GOLD) ---
+// --- GAUGE BUILDER (TEMA DARK DENGAN LED WARNA KARAKTER) ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     
-    // Ganti Plate Neon menjadi Kuning Emas Cerah (High Contrast with Navy Card)
-    colorPlate: "#fbbf24", 
+    // Latar Piringan Gelap (Agar warna teks tidak menusuk mata)
+    colorPlate: "#0b1120", 
     
-    // Warna Teks & Angka DI ATAS PLATE KUNING menjadi Navy Gelap agar terbaca
-    colorMajorTicks: "#0f172a", colorMinorTicks: "#0f172a",
-    colorNumbers: "#0f172a", 
-    
-    // Judul Gauge dan Jarum menggunakan warna metric passed in (Cerah)
+    // Teks Judul dan Nilai mengikuti warna Karakteristik
     colorTitle: color, 
+    colorValueText: color, 
+    
+    // Angka skala dibiarkan abu-abu terang agar rapi, garis batas memakai warna karakter
+    colorNumbers: "#cbd5e1", 
+    colorMajorTicks: color, colorMinorTicks: color,
+    
+    // Jarum menggunakan warna karakter
     colorNeedle: color, colorNeedleEnd: color,
+    colorValueBoxRect: "#1e293b",
     
     borders: true, borderOuterWidth: 10, colorBorderOuter: "#1e293b",
     needleType: "arrow", needleWidth: 4, valueBox: true,
     
-    // Kotak Nilai di bawah jarum
-    colorValueText: color, colorValueBoxRect: "#1e293b",
     animationDuration: 1000, animationRule: "linear"
 }).draw();
 
-// Inisialisasi warna-warni cerah agar menyala di atas Navy Card & Gold Plate Title
-const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#08f7fe'); // Cyan
-const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#4ade80'); // Hijau Cerah
-const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#f472b6'); // Pink Cerah
-const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu Cerah
+// Warna Karakter (Biru, Hijau, Emas, Ungu)
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8'); // Biru V
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); // Hijau A
+const gP = buildG('gauge-p', 'WATT', 5000, ["0","1k","2k","3k","4k","5k"], '#fbbf24'); // Emas W
+const gS = buildG('gauge-s', 'VA', 5000, ["0","1k","2k","3k","4k","5k"], '#a78bfa'); // Ungu VA
 
-// --- CHART BUILDER ---
+// --- CHART BUILDER (Warna Line Chart Mengikuti Karakter) ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { 
@@ -52,7 +54,7 @@ const createChart = (id, label, color) => new Chart(document.getElementById(id).
     },
     options: { 
         responsive: true, maintainAspectRatio: false,
-        color: '#f8fafc', // Warna teks legenda
+        color: '#f8fafc', 
         scales: {
             x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, 
             y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
@@ -60,9 +62,9 @@ const createChart = (id, label, color) => new Chart(document.getElementById(id).
     }
 });
 
-const chartV = createChart('chart-v', 'Voltage (V)', '#08f7fe');
-const chartI = createChart('chart-i', 'Current (A)', '#4ade80');
-const chartP = createChart('chart-p', 'Real Power (W)', '#f472b6');
+const chartV = createChart('chart-v', 'Voltage (V)', '#38bdf8');
+const chartI = createChart('chart-i', 'Current (A)', '#34d399');
+const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
 const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
 // --- CONFIGURATION LOGIC ---
@@ -104,7 +106,7 @@ onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
         
         document.getElementById('alert-text').innerText = "SISTEM " + (d.status || "UNKNOWN");
         document.querySelector('.status-box').style.borderLeftColor = 
-            d.status === 'NORMAL' ? '#22c55e' : (d.status === 'WASPADA' ? '#f59e0b' : '#ef4444');
+            d.status === 'NORMAL' ? '#22c55e' : (d.status === 'WASPADA' ? '#fbbf24' : '#ef4444');
     }
 });
 
