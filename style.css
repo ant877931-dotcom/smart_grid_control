@@ -144,39 +144,63 @@ header {
     box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
 }
 
-/* ================= GAUGE GRID ================= */
+/* ================= GAUGE GRID (NEON GLOW) ================= */
 .gauge-grid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-    gap: 25px; 
-    margin-bottom: 35px; 
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+    gap: 30px; 
+    background: transparent; 
+    margin-bottom: 30px; 
 }
 
+/* Background Speedometer Menjadi Biru Neon Bercahaya */
 .gauge-card { 
-    background: var(--card-bg);
-    padding: 35px 20px; 
+    background: #08f7fe; /* Biru Neon */
+    padding: 30px; 
     border-radius: var(--radius-lg); 
+    border: 2px solid #ffffff;
     text-align: center; 
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); /* Efek Cahaya / Glow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255,255,255,0.7); 
 }
 .gauge-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 45px rgba(8, 247, 254, 0.9); /* Glow membesar saat disorot */
 }
 
+/* Teks di bawah speedometer digelapkan agar kontras */
 .gauge-label { 
-    font-size: 0.9rem; 
+    font-size: 0.95rem; 
     font-weight: 800; 
-    margin-top: 25px; 
+    margin-top: 20px; 
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    color: #001529 !important; /* Navy gelap */
 }
-.lbl-v { color: var(--accent-blue); } 
-.lbl-i { color: var(--accent-green); } 
-.lbl-p { color: var(--accent-orange); } 
-.lbl-s { color: var(--accent-purple); }
+
+/* ================= CHARTS (NEON GLOW) ================= */
+.charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
+
+/* Background Line Chart Menjadi Biru Neon Bercahaya */
+.chart-card { 
+    background: #08f7fe; /* Biru Neon */
+    border-radius: var(--radius-lg); 
+    padding: 25px; 
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 25px rgba(8, 247, 254, 0.6); /* Efek Cahaya / Glow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.chart-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 45px rgba(8, 247, 254, 0.9);
+}
+
+.chart-card h4 { 
+    margin: 0 0 20px 0; 
+    color: #001529 !important; /* Judul chart warna navy gelap */
+    font-size: 1.1rem; 
+    font-weight: 800; 
+}
 
 /* ================= SETTINGS PANEL ================= */
 .settings-card { 
