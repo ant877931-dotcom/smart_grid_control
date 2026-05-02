@@ -9,8 +9,8 @@
 #include "addons/RTDBHelper.h"
 
 // --- KREDENSIAL ---
-#define WIFI_SSID "TECNO CAMON 40"
-#define WIFI_PASSWORD "414c766532b1" 
+#define WIFI_SSID "bernadya"
+#define WIFI_PASSWORD "mura0808" 
 #define API_KEY "AIzaSyAr_jda1kVfNTSRo62th2kMpJ-vsHlCXVw" 
 #define DATABASE_URL "https://smart-grid-monitor-default-rtdb.asia-southeast1.firebasedatabase.app/"
 
@@ -30,8 +30,10 @@ FirebaseData fbdo_stream, fbdo_upload;
 FirebaseAuth auth;
 FirebaseConfig config;
 
+// --- PARAMETER PROTEKSI ---
 float vAmanMin = 198.0, vAmanMax = 231.0;
 float vWaspadaL = 188.0, vWaspadaH = 241.0;
+float vDangerL = 170.0, vDangerH = 250.0; // Batas mutlak untuk Fuzzy Logic
 
 enum SystemStatus { STATUS_NORMAL, STATUS_WASPADA, STATUS_BAHAYA, STATUS_OFF };
 SystemStatus currentStatus = STATUS_NORMAL;
@@ -40,12 +42,15 @@ unsigned long lastBtnPress = 0, lastFirebaseUpdate = 0;
 
 // Variabel Auto-Reset & History
 String lastSavedHour = "";
-unsigned long currentRecoveryInterval = 5000;// Mulai dari 1 Menit
+unsigned long currentRecoveryInterval = 5000; // Mulai dari 5 Detik
 unsigned long recoveryTimer = 0;
 
 // Flag Pemanasan Sensor (Smart Polling)
 bool isWarmingUp = false;
 unsigned long warmupStartTime = 0;
+
+// Menyimpan skor kesehatan listrik hasil Fuzzy Sugeno (0-100)
+float lastFuzzyScore = 100.0; 
 
 // --- PROTOTIPE FUNGSI ---
 void handleButton();
@@ -106,6 +111,8 @@ void loop() {
         if (json.get(res, "v_aman_max")) vAmanMax = res.floatValue;
         if (json.get(res, "v_waspada_l")) vWaspadaL = res.floatValue;
         if (json.get(res, "v_waspada_h")) vWaspadaH = res.floatValue;
+        if (json.get(res, "v_danger_l")) vDangerL = res.floatValue;
+        if (json.get(res, "v_danger_h")) vDangerH = res.floatValue;
     }
 
     if (systemEnabled && !lastSystemEnabled) { systemPowerOnSequence(); lastSystemEnabled = true; }
@@ -142,7 +149,7 @@ void loop() {
     if (isnan(v) || v < 80.0) { v = 0.0; i = 0.0; p = 0.0; }
     float va = v * i;
 
-    // --- LOGIKA AUTO RESET ---
+    // --- LOGIKA AUTO RESET DENGAN EXPONENTIAL BACKOFF ---
     if (currentStatus == STATUS_BAHAYA && (millis() - recoveryTimer > currentRecoveryInterval)) {
         digitalWrite(PIN_BUZZER, LOW); 
         lcd.clear(); lcd.setCursor(0, 1); lcd.print("  AUTO RECOVERY...  ");
@@ -168,18 +175,61 @@ void loop() {
     delay(50);
 }
 
+// ========================================================================
+// LOGIKA CERDAS: FUZZY SUGENO UNTUK EVALUASI KESEHATAN LISTRIK
+// ========================================================================
 void handleRulebase(float v) {
+    // PROTEKSI MUTLAK (Bypass Fuzzy jika tegangan mati/error)
     if (v < 80.0) {
         if (currentStatus != STATUS_BAHAYA) recoveryTimer = millis(); 
         currentStatus = STATUS_BAHAYA;
+        lastFuzzyScore = 0.0;
         return;
     }
 
-    if (v >= vAmanMin && v <= vAmanMax) {
+    // TAHAP 1: FUZIFIKASI (Mencari Derajat Keanggotaan)
+    float uNormal = 0.0, uWaspada = 0.0, uBahaya = 0.0;
+
+    // A. Fungsi Keanggotaan NORMAL
+    if (v >= vAmanMin && v <= vAmanMax) uNormal = 1.0;
+    else if (v > vWaspadaL && v < vAmanMin) uNormal = (v - vWaspadaL) / (vAmanMin - vWaspadaL);
+    else if (v > vAmanMax && v < vWaspadaH) uNormal = (vWaspadaH - v) / (vWaspadaH - vAmanMax);
+    else uNormal = 0.0;
+
+    // B. Fungsi Keanggotaan WASPADA
+    if (v > vDangerL && v <= vWaspadaL) uWaspada = (v - vDangerL) / (vWaspadaL - vDangerL);
+    else if (v > vWaspadaL && v < vAmanMin) uWaspada = (vAmanMin - v) / (vAmanMin - vWaspadaL);
+    else if (v > vAmanMax && v <= vWaspadaH) uWaspada = (v - vAmanMax) / (vWaspadaH - vAmanMax);
+    else if (v > vWaspadaH && v < vDangerH) uWaspada = (vDangerH - v) / (vDangerH - vWaspadaH);
+    else uWaspada = 0.0;
+
+    // C. Fungsi Keanggotaan BAHAYA
+    if (v <= vDangerL || v >= vDangerH) uBahaya = 1.0;
+    else if (v > vDangerL && v <= vWaspadaL) uBahaya = (vWaspadaL - v) / (vWaspadaL - vDangerL);
+    else if (v > vWaspadaH && v < vDangerH) uBahaya = (v - vWaspadaH) / (vDangerH - vWaspadaH);
+    else uBahaya = 0.0;
+
+    // TAHAP 2: INFERENSI RULE (Bobot Sugeno)
+    float zNormal = 100.0; // Bobot Listrik Sehat
+    float zWaspada = 50.0; // Bobot Listrik Berisiko
+    float zBahaya = 0.0;   // Bobot Listrik Rusak
+
+    // TAHAP 3: DEFUZIFIKASI (Weighted Average)
+    float defuzzyResult = 0.0;
+    float totalU = uNormal + uWaspada + uBahaya;
+
+    if (totalU > 0.0) {
+        defuzzyResult = ((uNormal * zNormal) + (uWaspada * zWaspada) + (uBahaya * zBahaya)) / totalU;
+    }
+    
+    lastFuzzyScore = defuzzyResult; // Simpan ke variabel global untuk ditampilkan jika perlu
+
+    // TAHAP 4: KEPUTUSAN OUTPUT FISIK RELAY (Crisp Decision)
+    if (defuzzyResult >= 75.0) {
         currentStatus = STATUS_NORMAL;
         currentRecoveryInterval = 5000; 
     } 
-    else if ((v >= vWaspadaL && v < vAmanMin) || (v > vAmanMax && v <= vWaspadaH)) {
+    else if (defuzzyResult >= 30.0 && defuzzyResult < 75.0) {
         currentStatus = STATUS_WASPADA;
         currentRecoveryInterval = 5000; 
     } 
@@ -188,6 +238,7 @@ void handleRulebase(float v) {
         currentStatus = STATUS_BAHAYA;
     }
 }
+// ========================================================================
 
 void executeOutputs() {
     if (currentStatus == STATUS_NORMAL) {
@@ -203,27 +254,21 @@ void executeOutputs() {
 }
 
 void systemPowerOnSequence() {
-    // --- [INJEKSI IDE BRILIAN] FASE HARD RESET (POWER CYCLE) ---
-    // Mematikan semua perangkat daya secara total layaknya menekan tombol off
     digitalWrite(PIN_RELAY_LOAD, LOW); 
     digitalWrite(PIN_RELAY_GREEN, LOW);
     digitalWrite(PIN_RELAY_ORANGE, LOW); 
     digitalWrite(PIN_RELAY_RED, LOW);
     
-    // Memberikan jeda 1.5 detik agar listrik di dalam kapasitor perangkat benar-benar habis ("Cold Boot")
     delay(1500); 
-    // -----------------------------------------------------------
 
     currentStatus = STATUS_NORMAL; 
     lcd.init(); lcd.clear();
     
-    // Bunyi Beep Beep
     digitalWrite(PIN_BUZZER, HIGH); delay(150); digitalWrite(PIN_BUZZER, LOW); delay(100);  
     digitalWrite(PIN_BUZZER, HIGH); delay(150); digitalWrite(PIN_BUZZER, LOW);
     
     delay(500); 
     
-    // Menyalakan ulang sistem (seperti menekan tombol on)
     digitalWrite(PIN_RELAY_LOAD, HIGH); 
     digitalWrite(PIN_RELAY_GREEN, HIGH);
     
@@ -241,7 +286,6 @@ void systemShutdown() {
 
 void handleBuzzer() {
     unsigned long currentMillis = millis();
-    
     if (currentStatus == STATUS_WASPADA) {
         if (currentMillis % 1000 < 200) digitalWrite(PIN_BUZZER, HIGH);
         else digitalWrite(PIN_BUZZER, LOW);
@@ -250,9 +294,7 @@ void handleBuzzer() {
         if (currentMillis % 1000 < 800) digitalWrite(PIN_BUZZER, HIGH);
         else digitalWrite(PIN_BUZZER, LOW);
     } 
-    else {
-        digitalWrite(PIN_BUZZER, LOW);
-    }
+    else { digitalWrite(PIN_BUZZER, LOW); }
 }
 
 void uploadToFirebase(float v, float i, float p, float va) {
@@ -265,6 +307,8 @@ void uploadToFirebase(float v, float i, float p, float va) {
     rtJson.set("power_nyata", p); rtJson.set("power_semu", va); 
     rtJson.set("last_update", fullTime);
     rtJson.set("status", (currentStatus == STATUS_NORMAL) ? "NORMAL" : (currentStatus == STATUS_WASPADA ? "WASPADA" : "PROTEKSI"));
+    // (Opsional) Mengirimkan Skor Fuzzy ke Firebase jika ingin dirender di dashboard nanti
+    rtJson.set("fuzzy_score", lastFuzzyScore);
 
     Firebase.RTDB.updateNodeAsync(&fbdo_upload, "/SmartGrid/Realtime", &rtJson);
 
@@ -282,8 +326,8 @@ void uploadToFirebase(float v, float i, float p, float va) {
 void updateLCD(float v, float i, float p, float va) {
     char buf[21];
     lcd.setCursor(0,0); snprintf(buf, sizeof(buf), "V:%-5.1fV I:%-5.2fA ", v, i); lcd.print(buf);
-    lcd.setCursor(0,1); snprintf(buf, sizeof(buf), "P.Nyata: %-6.0f W ", p); lcd.print(buf);
-    lcd.setCursor(0,2); snprintf(buf, sizeof(buf), "P.Semu : %-6.0f VA", va); lcd.print(buf);
+    lcd.setCursor(0,1); snprintf(buf, sizeof(buf), "P: %-6.0fW Fz: %-2.0f%%", p, lastFuzzyScore); lcd.print(buf);
+    lcd.setCursor(0,2); snprintf(buf, sizeof(buf), "S: %-6.0fVA       ", va); lcd.print(buf);
     lcd.setCursor(0,3); lcd.print("STATUS: ");
     if (currentStatus == STATUS_NORMAL) lcd.print("NORMAL ");
     else if (currentStatus == STATUS_WASPADA) lcd.print("WASPADA");
