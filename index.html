@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Grid Monitor - Premium Dark</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css">
+    <!-- Pustaka Visualisasi: Chart.js & Canvas Gauges -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
+        <!-- HEADER -->
         <header>
             <div class="brand">
                 <h1>⚡ SMART-GRID <span class="accent-blue">MONITOR</span></h1>
@@ -21,23 +23,26 @@
             </div>
         </header>
 
+        <!-- SECTION 1: Indikator Speedometer (Realtime) -->
         <section class="gauge-grid">
             <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label">TEGANGAN (V)</div></div>
             <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label">ARUS (A)</div></div>
             <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label">DAYA NYATA (W)</div></div>
             <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label">DAYA SEMU (VA)</div></div>
+            <div class="gauge-card"><canvas id="gauge-pf"></canvas><div class="gauge-label">FAKTOR DAYA (cos φ)</div></div>
         </section>
 
+        <!-- SECTION 2: Panel Parameter Fuzzy (Push Command) -->
         <section id="settings-panel" class="card settings-card hidden">
             <div class="settings-header">
-                <h3>⚙️ Konfigurasi Parameter Proteksi</h3>
-                <button id="btn-save-settings" class="btn-primary">SIMPAN KE FIREBASE</button>
+                <h3>⚙️ Konfigurasi Parameter Logika Fuzzy</h3>
+                <button id="btn-save-settings" class="btn-primary">SIMPAN KE ALAT</button>
             </div>
             <div class="settings-grid">
                 <div class="config-group">
-                    <span class="group-title">Rentang Aman</span>
+                    <span class="group-title">Rentang Aman (Volt)</span>
                     <div class="form-group">
-                        <label>Min/Max Normal (V)</label>
+                        <label>Min/Max Normal</label>
                         <div class="input-range-box">
                             <input type="number" id="v-aman-min" value="198">
                             <span class="range-sep">-</span>
@@ -46,7 +51,7 @@
                     </div>
                 </div>
                 <div class="config-group">
-                    <span class="group-title">Waspada & Bahaya</span>
+                    <span class="group-title">Batas Toleransi & Bahaya Mutlak</span>
                     <div class="form-group">
                         <label>Batas Bawah (Waspada / Bahaya)</label>
                         <div class="input-range-box">
@@ -67,10 +72,11 @@
             </div>
         </section>
 
+        <!-- SECTION 3: Grafik Riwayat Temporer (Line Charts) -->
         <section class="history-controls">
             <div class="date-loader">
                 <input type="date" id="select-date">
-                <button id="btn-load-hist" class="btn-primary">MUAT RIWAYAT</button>
+                <button id="btn-load-hist" class="btn-primary">MUAT RIWAYAT LOG</button>
             </div>
         </section>
 
@@ -81,15 +87,23 @@
             <div class="chart-card"><h4>Apparent Power Log (VA)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-s"></canvas></div></div></div>
         </section>
 
+        <!-- SECTION 4: Bar Status Proteksi & Analitik -->
         <footer class="alert-footer">
             <div id="alert-box" class="status-box">
                 <div class="alert-info">
-                    <small>STATUS PROTEKSI</small>
+                    <small>STATUS PROTEKSI RELAY (FUZZY)</small>
                     <h2 id="alert-text">MENGHUBUNGKAN...</h2>
+                </div>
+            </div>
+            
+            <div id="efficiency-box" class="status-box" style="border-left-color: #0ea5e9;">
+                <div class="alert-info">
+                    <small>ANALISA EFISIENSI (cos φ)</small>
+                    <h2 id="pf-text" style="color: #0ea5e9;">MENGHITUNG...</h2>
                 </div>
             </div>
         </footer>
     </div>
-    <script type="module" src="app.js?v=3"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
