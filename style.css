@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    /* Tema Dasar: Background Terang Biru Es, Komponen Gelap Navy */
-    --bg-main: #eff6ff;        
-    --card-bg: #ffffff;        
+    --bg-main: #eff6ff;     
+    --card-bg: #0f172a;     
     --border-light: #dbeafe;   
     --text-main: #1e3a8a;      
     --text-muted: #60a5fa;     
@@ -16,11 +15,10 @@
 
 body { background: var(--bg-main); font-family: 'Inter', sans-serif; margin: 0; color: var(--text-main); overflow-y: scroll; overflow-x: hidden; -webkit-font-smoothing: antialiased;}
 
-/* Lebar Dashboard 20% Lebih Besar */
 .dashboard-container { max-width: 1440px; margin: 0 auto; padding: 30px 20px; box-sizing: border-box; }
 
-/* Header & Status Indicator */
-header { background: var(--card-bg); padding: 20px 30px; border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; box-shadow: var(--shadow-card); }
+/* HEADER */
+header { background: #ffffff; padding: 20px 30px; border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; box-shadow: var(--shadow-card); }
 .brand h1 { margin: 0; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
 .accent-blue { background: linear-gradient(135deg, var(--accent-blue), #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 #live-clock { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-left: 35px; }
@@ -35,8 +33,18 @@ header { background: var(--card-bg); padding: 20px 30px; border-radius: var(--ra
 .btn-primary { background: linear-gradient(135deg, var(--accent-blue), #1e40af); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3); }
 
-/* ================= CONFIG PANEL (DARK NAVY) ================= */
-.settings-card { background: #0f172a; border-radius: var(--radius-lg); padding: 35px; margin-bottom: 35px; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); }
+/* UI KARTU GELAP (DARK MODE) */
+.gauge-card, .chart-card, .settings-card { 
+    background: var(--card-bg); 
+    border-radius: var(--radius-lg); 
+    border: 1px solid #1e293b;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.gauge-card:hover, .chart-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(15, 23, 42, 0.4); }
+
+/* PANEL SETTINGS */
+.settings-card { padding: 35px; margin-bottom: 35px; }
 .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; }
 .settings-header h3 { margin: 0; color: #f8fafc; font-weight: 700; }
 .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; } 
@@ -50,61 +58,39 @@ header { background: var(--card-bg); padding: 20px 30px; border-radius: var(--ra
 .range-sep { padding: 0 15px; font-weight: bold; color: #64748b; background: #1e293b; height: 100%; display: flex; align-items: center; border-left: 1px solid #334155; border-right: 1px solid #334155; }
 .hidden { display: none !important; }
 
-/* History Loader */
+/* HISTORY LOADER */
 .history-controls { margin-bottom: 25px; }
-.date-loader { display: flex; gap: 15px; background: var(--card-bg); padding: 15px; border-radius: var(--radius-md); align-items: center; width: fit-content; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
+.date-loader { display: flex; gap: 15px; background: #ffffff; padding: 15px; border-radius: var(--radius-md); align-items: center; width: fit-content; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); }
 .date-loader input { padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border-light); outline: none; font-size: 0.9rem; font-weight: 600; color: var(--text-main); cursor: pointer; }
-.date-loader input:focus { border-color: var(--accent-blue); }
 
-/* ================= SPEEDOMETER CARDS (NAVY BACKGROUND) ================= */
+/* GAUGE GRID & AKSEN WARNA */
 .gauge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; margin-bottom: 35px; }
-.gauge-card { 
-    background: #0f172a; 
-    border-radius: var(--radius-lg); 
-    border: 1px solid #1e293b;
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); 
-    padding: 30px; text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.gauge-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(15, 23, 42, 0.4); }
+.gauge-card { padding: 30px; text-align: center; }
+.gauge-label { font-size: 0.95rem; font-weight: 800; margin-top: 25px; letter-spacing: 0.5px; text-transform: uppercase; }
 
-.gauge-label { 
-    font-size: 0.95rem; font-weight: 800; margin-top: 25px; 
-    letter-spacing: 0.5px; text-transform: uppercase;
-}
+.gauge-card:nth-child(1) .gauge-label, .chart-card:nth-child(1) h4 { color: #38bdf8 !important; } /* Biru: Volt */
+.gauge-card:nth-child(2) .gauge-label, .chart-card:nth-child(2) h4 { color: #34d399 !important; } /* Hijau: Ampere */
+.gauge-card:nth-child(3) .gauge-label, .chart-card:nth-child(3) h4 { color: #fbbf24 !important; } /* Kuning: Watt */
+.gauge-card:nth-child(4) .gauge-label, .chart-card:nth-child(4) h4 { color: #a78bfa !important; } /* Ungu: VA */
+.gauge-card:nth-child(5) .gauge-label { color: #0ea5e9 !important; } /* Cyan: Faktor Daya */
 
-/* Pewarnaan Teks HTML Sesuai Karakteristik LED */
-.gauge-card:nth-child(1) .gauge-label { color: #38bdf8 !important; } /* Tegangan: Biru */
-.gauge-card:nth-child(2) .gauge-label { color: #34d399 !important; } /* Arus: Hijau */
-.gauge-card:nth-child(3) .gauge-label { color: #fbbf24 !important; } /* Watt: Emas */
-.gauge-card:nth-child(4) .gauge-label { color: #a78bfa !important; } /* VA: Ungu */
-
-/* ================= CHARTS AREA (NAVY BACKGROUND) ================= */
+/* CHARTS GRID */
 .charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
-.chart-card { 
-    background: #0f172a; border-radius: var(--radius-lg); padding: 25px;
-    border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.chart-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(15, 23, 42, 0.4); }
-
+.chart-card { padding: 25px; }
 .chart-card h4 { margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 800; }
-
-/* Pewarnaan Judul Chart Sesuai Karakteristik LED */
-.chart-card:nth-child(1) h4 { color: #38bdf8 !important; } /* Tegangan: Biru */
-.chart-card:nth-child(2) h4 { color: #34d399 !important; } /* Arus: Hijau */
-.chart-card:nth-child(3) h4 { color: #fbbf24 !important; } /* Watt: Emas */
-.chart-card:nth-child(4) h4 { color: #a78bfa !important; } /* VA: Ungu */
-
 .scroll-wrapper { overflow-x: auto; border: 1px solid #1e293b; border-radius: var(--radius-md); width: 100%; background: #0b1120; }
 .inner-chart { min-width: 900px; height: 350px; padding: 15px; } 
 
 .scroll-wrapper::-webkit-scrollbar { height: 8px; }
 .scroll-wrapper::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px;}
 .scroll-wrapper::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-.scroll-wrapper::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* Footer Alert Status */
-.status-box { background: var(--card-bg); padding: 25px 35px; border-radius: var(--radius-lg); border-left: 12px solid var(--accent-green); box-shadow: var(--shadow-card); display: flex; align-items: center; transition: border-color 0.3s ease; }
+/* FOOTER ANALITIK (GRID 2 KOLOM) */
+.alert-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+.status-box { background: #ffffff; padding: 25px 35px; border-radius: var(--radius-lg); border-left: 12px solid var(--accent-green); box-shadow: var(--shadow-card); display: flex; align-items: center; transition: border-color 0.3s ease; }
 .alert-info small { color: var(--text-muted); font-weight: 800; letter-spacing: 1px; font-size: 0.75rem; }
-.alert-info h2 { margin: 8px 0 0 0; font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+.alert-info h2 { margin: 8px 0 0 0; font-size: 1.6rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+
+@media (max-width: 768px) {
+    .alert-footer { grid-template-columns: 1fr; }
+}
