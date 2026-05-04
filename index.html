@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Grid & Analisa Fuzzy Sugeno</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Pustaka Visualisasi: Chart.js & Canvas Gauges -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- 1. HEADER: Status & Waktu -->
+        <!-- HEADER -->
         <header>
             <div class="brand">
                 <h1>⚡ SMART-GRID <span class="accent-blue">& ANALISA FUZZY</span></h1>
@@ -23,7 +22,7 @@
             </div>
         </header>
 
-        <!-- 2. DATA CARDS: 5 Instrumen Utama -->
+        <!-- SPEEDOMETERS (5 Unit) -->
         <section class="gauge-grid">
             <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label">TEGANGAN (V)</div></div>
             <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label">ARUS (A)</div></div>
@@ -32,47 +31,50 @@
             <div class="gauge-card"><canvas id="gauge-pf"></canvas><div class="gauge-label">FAKTOR DAYA (cos φ)</div></div>
         </section>
 
-        <!-- 3. CONFIG PANEL (Tersembunyi secara default) -->
+        <!-- PANEL KONFIGURASI (Sesuai Gambar 2) -->
         <section id="settings-panel" class="card settings-card hidden">
-            <div class="settings-header">
+            <div class="settings-header-top">
                 <h3>⚙️ Konfigurasi Parameter Logika Fuzzy</h3>
+            </div>
+            <div class="settings-action-row">
                 <button id="btn-save-settings" class="btn-primary">SIMPAN KE ALAT</button>
             </div>
-            <div class="settings-grid">
-                <div class="config-group">
-                    <span class="group-title">Rentang Normal (V)</span>
-                    <div class="input-range-box">
+            <div class="settings-body">
+                <div class="config-group-full">
+                    <label class="input-label-main">Rentang Normal (V)</label>
+                    <div class="dark-input-bar">
                         <input type="number" id="v-aman-min" value="198">
-                        <span class="range-sep">-</span>
+                        <span class="bar-sep">-</span>
                         <input type="number" id="v-aman-max" value="231">
                     </div>
                 </div>
-                <div class="config-group">
-                    <span class="group-title">Batas Bahaya (V)</span>
-                    <div class="input-range-box">
+                <div class="config-group-full">
+                    <label class="input-label-main">Batas Bahaya (V)</label>
+                    <div class="dark-input-bar">
                         <input type="number" id="v-danger-l" value="170">
-                        <span class="range-sep">/</span>
+                        <span class="bar-sep">/</span>
                         <input type="number" id="v-danger-h" value="250">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. CHARTS: Visualisasi Tren Historis -->
+        <!-- DATA LOGGER & CHARTS (Satu Chart per Baris sesuai Gambar 1) -->
         <section class="history-controls">
-            <div class="date-loader">
+            <div class="date-loader-row">
                 <input type="date" id="select-date">
                 <button id="btn-load-hist" class="btn-primary">MUAT RIWAYAT</button>
             </div>
         </section>
-        <section class="charts-grid">
-            <div class="chart-card"><h4>Voltage (V)</h4><div class="scroll-wrapper"><canvas id="chart-v"></canvas></div></div>
-            <div class="chart-card"><h4>Current (A)</h4><div class="scroll-wrapper"><canvas id="chart-i"></canvas></div></div>
-            <div class="chart-card"><h4>P (W) vs S (VA)</h4><div class="scroll-wrapper"><canvas id="chart-power"></canvas></div></div>
-            <div class="chart-card"><h4>Faktor Daya (cos φ)</h4><div class="scroll-wrapper"><canvas id="chart-pf"></canvas></div></div>
+
+        <section class="charts-vertical-stack">
+            <div class="chart-card-full"><h4>Voltage (V)</h4><div class="chart-container-large"><canvas id="chart-v"></canvas></div></div>
+            <div class="chart-card-full"><h4>Current (A)</h4><div class="chart-container-large"><canvas id="chart-i"></canvas></div></div>
+            <div class="chart-card-full"><h4>Power P (W) vs S (VA)</h4><div class="chart-container-large"><canvas id="chart-power"></canvas></div></div>
+            <div class="chart-card-full"><h4>Faktor Daya (cos φ)</h4><div class="chart-container-large"><canvas id="chart-pf"></canvas></div></div>
         </section>
 
-        <!-- 5. EXPERT ANALYSIS: Rekomendasi Otomatis -->
+        <!-- ANALISA PAKAR -->
         <section class="analysis-section">
             <div class="analysis-card">
                 <h3>🧠 Analisa Efisiensi & Rekomendasi</h3>
@@ -89,7 +91,7 @@
             </div>
         </section>
 
-        <!-- 6. FOOTER: Output Fuzzy -->
+        <!-- FOOTER STATUS -->
         <footer class="alert-footer">
             <div id="alert-box" class="status-box">
                 <div class="alert-info">
