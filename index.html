@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Grid & Analisa Fuzzy Sugeno</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Pustaka Visualisasi: Chart.js & Canvas Gauges -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
 </head>
@@ -31,7 +32,7 @@
             <div class="gauge-card"><canvas id="gauge-pf"></canvas><div class="gauge-label">FAKTOR DAYA (cos φ)</div></div>
         </section>
 
-        <!-- 3. CONFIG PANEL (Hidden by Default) -->
+        <!-- 3. CONFIG PANEL (Tersembunyi secara default) -->
         <section id="settings-panel" class="card settings-card hidden">
             <div class="settings-header">
                 <h3>⚙️ Konfigurasi Parameter Logika Fuzzy</h3>
@@ -57,7 +58,7 @@
             </div>
         </section>
 
-        <!-- 4. CHARTS: Visualisasi Tren -->
+        <!-- 4. CHARTS: Visualisasi Tren Historis -->
         <section class="history-controls">
             <div class="date-loader">
                 <input type="date" id="select-date">
@@ -78,7 +79,7 @@
                 <div class="analysis-content">
                     <div class="analysis-box">
                         <h4>🔍 Rincian Analisa:</h4>
-                        <ul id="analisa-list"><li>Menunggu data...</li></ul>
+                        <ul id="analisa-list"><li>Menunggu data kelistrikan...</li></ul>
                     </div>
                     <div class="analysis-box">
                         <h4>🎯 Kesimpulan:</h4>
