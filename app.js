@@ -8,7 +8,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- 1. GAUGE INITIALIZATION ---
+// --- GAUGE ---
 const buildG = (id, title, max, color) => new RadialGauge({
     renderTo: id, width: 200, height: 200, title: title, minValue: 0, maxValue: max,
     colorPlate: "#0b1120", colorTitle: color, colorValueText: color, colorNumbers: "#cbd5e1",
@@ -21,39 +21,47 @@ const gP = buildG('gauge-p', 'WATT', 2000, '#fbbf24');
 const gS = buildG('gauge-s', 'VA', 2000, '#a78bfa');
 const gPF = buildG('gauge-pf', 'COS φ', 1, '#0ea5e9');
 
-// --- 2. CHART INITIALIZATION (Baris per Baris) ---
-const createChart = (id, datasets) => new Chart(document.getElementById(id).getContext('2d'), {
+// --- CHARTS (Satu per baris) ---
+const createChart = (id, label, color, isDashed = false) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { 
         labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), 
-        datasets: datasets 
+        datasets: [{ 
+            label: label, data: [], borderColor: color, 
+            borderDash: isDashed ? [5, 5] : [], 
+            backgroundColor: color + '22', fill: true, tension: 0.3 
+        }] 
     },
     options: { 
-        responsive: true, 
-        maintainAspectRatio: false, 
-        scales: { 
-            y: { grid: { color: '#1e293b' } },
-            x: { grid: { color: '#1e293b' } }
-        } 
+        responsive: true, maintainAspectRatio: false, 
+        scales: { y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } } 
     }
 });
 
-const chartV = createChart('chart-v', [{ label: 'Voltage', data: [], borderColor: '#38bdf8', tension: 0.3 }]);
-const chartI = createChart('chart-i', [{ label: 'Current', data: [], borderColor: '#34d399', tension: 0.3 }]);
-const chartPF = createChart('chart-pf', [{ label: 'PF', data: [], borderColor: '#0ea5e9', tension: 0.3 }]);
-const chartPower = createChart('chart-power', [
-    { label: 'P (Watt)', data: [], borderColor: '#fbbf24', tension: 0.3 },
-    { label: 'S (VA)', data: [], borderColor: '#a78bfa', borderDash: [5,5], tension: 0.3 }
-]);
+const chartV = createChart('chart-v', 'Voltage (V)', '#38bdf8');
+const chartI = createChart('chart-i', 'Current (A)', '#34d399');
+const chartPF = createChart('chart-pf', 'Faktor Daya', '#0ea5e9');
 
-// --- 3. REALTIME & ANALYSIS LOGIC ---
+// Khusus Power (P vs S)
+const chartPower = new Chart(document.getElementById('chart-power').getContext('2d'), {
+    type: 'line',
+    data: { 
+        labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), 
+        datasets: [
+            { label: 'P (Watt)', data: [], borderColor: '#fbbf24', tension: 0.3 },
+            { label: 'S (VA)', data: [], borderColor: '#a78bfa', borderDash: [5, 5], tension: 0.3 }
+        ] 
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+});
+
+// --- REALTIME & ANALISA ---
 onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
     const d = snap.val();
     if(d) {
         let p = d.power_nyata || 0; let s = d.power_semu || 0;
         gV.value = d.voltage; gI.value = d.current; gP.value = p; gS.value = s;
 
-        // Analisa Faktor Daya (cos φ = P / S)
         let pf = s > 0 ? p / s : 0;
         gPF.value = parseFloat(pf.toFixed(2));
 
@@ -62,26 +70,51 @@ onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
         const textRek = document.getElementById('rekomendasi-text');
         
         if (s > 0) {
-            let analisaHtml = `<li>Selisih daya reaktif: ${(s-p).toFixed(1)} Var</li>`;
+            let analisaHtml = `<li>Daya Aktif: ${p}W | Daya Semu: ${s}VA</li>`;
             if (pf >= 0.85) {
-                analisaHtml += `<li>Efisiensi Tinggi (${pf.toFixed(2)})</li>`;
-                textRek.innerText = "✅ Sistem SANGAT EFISIEN. Pertahankan kondisi ini.";
+                analisaHtml += `<li>Sistem Efisien (PF: ${pf.toFixed(2)})</li>`;
+                textRek.innerText = "✅ Kondisi Ideal. Tidak perlu tindakan.";
                 textRek.style.color = "#10b981";
             } else {
-                analisaHtml += `<li>Rugi Daya Besar (${pf.toFixed(2)})</li>`;
-                textRek.innerText = "🛑 BURUK. Rekomendasi: Pasang Kapasitor Bank.";
+                analisaHtml += `<li>Rugi Daya Tinggi (PF: ${pf.toFixed(2)})</li>`;
+                textRek.innerText = "🛑 Buruk. Disarankan pasang Kapasitor Bank.";
                 textRek.style.color = "#ef4444";
             }
             listAnalisa.innerHTML = analisaHtml;
         }
 
-        // Status Fuzzy Sugeno
         document.getElementById('alert-text').innerText = d.status;
         document.getElementById('fuzzy-score-text').innerText = `Skor AI: ${parseFloat(d.fuzzy_score).toFixed(1)}%`;
     }
 });
 
-// --- 4. HISTORY RETRIEVAL ---
+// --- TOGGLE & SAVE CONFIG ---
+const btnToggle = document.getElementById('btn-toggle-settings');
+const panel = document.getElementById('settings-panel');
+
+btnToggle.onclick = () => {
+    if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        btnToggle.innerText = '✕ TUTUP'; // Gambar 3
+        btnToggle.style.color = '#ef4444';
+    } else {
+        panel.classList.add('hidden');
+        btnToggle.innerText = '⚙️ CONFIG FUZZY';
+        btnToggle.style.color = '';
+    }
+};
+
+document.getElementById('btn-save-settings').onclick = () => {
+    const dataSet = {
+        v_aman_min: parseFloat(document.getElementById('v-aman-min').value),
+        v_aman_max: parseFloat(document.getElementById('v-aman-max').value),
+        v_danger_l: parseFloat(document.getElementById('v-danger-l').value),
+        v_danger_h: parseFloat(document.getElementById('v-danger-h').value)
+    };
+    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Parameter Disimpan!"));
+};
+
+// --- HISTORY ---
 document.getElementById('btn-load-hist').onclick = () => {
     const dateStr = document.getElementById('select-date').value;
     get(ref(db, `SmartGrid/History/Hourly/${dateStr}`)).then((snap) => {
@@ -90,10 +123,9 @@ document.getElementById('btn-load-hist').onclick = () => {
             const v=[], a=[], p=[], s=[], pf=[];
             for(let i=0; i<24; i++){
                 const k = String(i).padStart(2,'0');
-                let valP = h[k]?.p ?? null; let valS = h[k]?.s ?? null;
                 v.push(h[k]?.v ?? null); a.push(h[k]?.a ?? null);
-                p.push(valP); s.push(valS);
-                pf.push((valP && valS) ? valP / valS : null);
+                p.push(h[k]?.p ?? null); s.push(h[k]?.s ?? null);
+                pf.push((h[k]?.p && h[k]?.s) ? h[k].p / h[k].s : null);
             }
             chartV.data.datasets[0].data = v; chartV.update();
             chartI.data.datasets[0].data = a; chartI.update();
