@@ -17,67 +17,44 @@
             </div>
             <div class="header-actions">
                 <button id="btn-toggle-settings" class="btn-outline">⚙️ PARAMETER</button>
-                <div id="status-badge" class="badge-online">ONLINE</div>
             </div>
         </header>
 
-        <!-- Gauges Section -->
         <section class="gauge-grid">
-            <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label lbl-v">TEGANGAN (V)</div></div>
-            <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label lbl-i">ARUS (A)</div></div>
-            <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label lbl-p">DAYA NYATA (W)</div></div>
-            <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label lbl-s">DAYA SEMU (VA)</div></div>
+            <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label">TEGANGAN (V)</div></div>
+            <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label">ARUS (A)</div></div>
+            <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label">DAYA NYATA (WATT)</div></div>
+            <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label">DAYA SEMU (VA)</div></div>
         </section>
 
-        <!-- Settings Panel (Sesuai Gambar 2) -->
         <section id="settings-panel" class="settings-card hidden">
-            <div class="settings-header-top">
-                <h3>⚙️ Konfigurasi Parameter Logika Fuzzy</h3>
-            </div>
-            <div class="settings-action-row">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+                <h3>⚙️ Batas Proteksi Fuzzy</h3>
                 <button id="btn-save-settings" class="btn-primary">SIMPAN KE ALAT</button>
             </div>
-            <div class="settings-body">
-                <div class="config-group-full">
-                    <label class="input-label-main">Rentang Normal (V)</label>
-                    <div class="dark-input-bar">
+            <div class="settings-grid">
+                <div class="config-group">
+                    <label>Rentang Aman Normal (V)</label>
+                    <div class="input-range-box">
                         <input type="number" id="v-aman-min" value="198">
-                        <span class="bar-sep">-</span>
+                        <span class="range-sep">-</span>
                         <input type="number" id="v-aman-max" value="231">
                     </div>
                 </div>
-                <div class="config-group-full">
-                    <label class="input-label-main">Batas Bahaya (V)</label>
-                    <div class="dark-input-bar">
-                        <input type="number" id="v-danger-l" value="170">
-                        <span class="bar-sep">/</span>
-                        <input type="number" id="v-danger-h" value="250">
+                <div class="config-group">
+                    <label>Waspada Bawah/Atas (V)</label>
+                    <div class="input-range-box">
+                        <input type="number" id="v-waspada-l" value="188">
+                        <span class="range-sep">|</span>
+                        <input type="number" id="v-waspada-h" value="241">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- History Controls -->
-        <section class="history-controls">
-            <div class="date-loader">
-                <input type="date" id="select-date">
-                <button id="btn-load-hist">MUAT RIWAYAT</button>
-            </div>
-        </section>
-
-        <!-- Charts Stack (Satu per Baris sesuai Gambar 1) -->
-        <section class="charts-grid">
-            <div class="chart-card"><h4>Voltage (V)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-v"></canvas></div></div></div>
-            <div class="chart-card"><h4>Current (A)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
-            <div class="chart-card"><h4>Real Power (W)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-p"></canvas></div></div></div>
-            <div class="chart-card"><h4>Apparent Power (VA)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-s"></canvas></div></div></div>
-        </section>
-
         <footer class="status-box">
-            <div class="status-info">
-                <small>SISTEM STATUS</small>
-                <h2 id="alert-text">MENGHUBUNGKAN...</h2>
-            </div>
+            <small>SISTEM STATUS</small>
+            <h2 id="alert-text">MENGHUBUNGKAN...</h2>
         </footer>
     </div>
     <script type="module" src="app.js"></script>
