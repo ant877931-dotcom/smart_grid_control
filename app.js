@@ -105,7 +105,7 @@ onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
         // KALKULASI FAKTOR DAYA (PF = P / S)
         let pf = 0;
         if (s > 0) pf = p / s;
-        gPF.value = pf.toFixed(2);
+        gPF.value = parseFloat(pf.toFixed(2));
 
         // ANALISA EFISIENSI LISTRIK
         let pfStatus = ""; let pfColor = "";
