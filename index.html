@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Daya & Analisa Fuzzy</title>
+    <title>Smart Grid & Analisa Fuzzy</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js"></script>
@@ -14,85 +14,107 @@
         <!-- 1. HEADER -->
         <header>
             <div class="brand">
-                <h1>⚡ MONITORING DAYA & <span class="accent-blue">ANALISA FUZZY</span></h1>
+                <h1>⚡ SMART-GRID <span class="accent-blue">& ANALISA FUZZY</span></h1>
+                <div id="live-clock">--:--:--</div>
             </div>
             <div class="header-actions">
-                <div id="live-clock" class="time-badge">--:--:--</div>
-                <div id="status-badge" class="badge-online">🟢 ONLINE</div>
+                <button id="btn-toggle-settings" class="btn-outline">⚙️ CONFIG FUZZY</button>
+                <div id="status-badge" class="badge-online">ONLINE</div>
             </div>
         </header>
 
-        <!-- 2. CARD DATA UTAMA (4 Kotak) -->
-        <section class="main-cards-grid">
-            <!-- Card 1: Daya Nyata -->
-            <div class="data-card border-blue">
-                <small>DAYA NYATA (P)</small>
-                <h2 id="val-p" class="text-blue">0 <span class="unit">Watt</span></h2>
-            </div>
-            
-            <!-- Card 2: Daya Semu -->
-            <div class="data-card border-purple">
-                <small>DAYA SEMU (S)</small>
-                <h2 id="val-s" class="text-purple">0 <span class="unit">VA</span></h2>
-            </div>
-
-            <!-- Card 3: Faktor Daya (Gauge) -->
-            <div class="data-card border-cyan gauge-container">
-                <canvas id="gauge-pf"></canvas>
-                <div class="gauge-label">FAKTOR DAYA (cos φ)</div>
-            </div>
-
-            <!-- Card 4: Output Fuzzy -->
-            <div class="data-card" id="card-fuzzy">
-                <small>STATUS SISTEM (FUZZY)</small>
-                <h2 id="val-status">MENGHUBUNGKAN...</h2>
-                <p id="val-score">Skor Kesehatan: 0%</p>
-            </div>
+        <!-- 2. SPEEDOMETER GRID (5 Instrumen Lengkap) -->
+        <section class="gauge-grid">
+            <div class="gauge-card"><canvas id="gauge-v"></canvas><div class="gauge-label">TEGANGAN (V)</div></div>
+            <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label">ARUS (A)</div></div>
+            <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label">DAYA NYATA (W)</div></div>
+            <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label">DAYA SEMU (VA)</div></div>
+            <div class="gauge-card"><canvas id="gauge-pf"></canvas><div class="gauge-label">FAKTOR DAYA (cos φ)</div></div>
         </section>
 
-        <!-- 3. GRAFIK MONITORING (Kombinasi P & S dalam 1 Grafik) -->
-        <section class="charts-section">
-            <div class="chart-header">
-                <h3>📈 Grafik Perbandingan Daya (Real-Time)</h3>
-                <div class="date-loader">
-                    <input type="date" id="select-date">
-                    <button id="btn-load-hist" class="btn-primary">MUAT RIWAYAT</button>
-                </div>
+        <!-- 3. PANEL KONFIGURASI FUZZY -->
+        <section id="settings-panel" class="card settings-card hidden">
+            <div class="settings-header">
+                <h3>⚙️ Konfigurasi Parameter Logika Fuzzy</h3>
+                <button id="btn-save-settings" class="btn-primary">SIMPAN KE ALAT</button>
             </div>
-            
-            <div class="charts-grid">
-                <!-- Grafik 1: P vs S -->
-                <div class="chart-card">
-                    <h4>Daya Nyata (W) vs Daya Semu (VA)</h4>
-                    <div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-power"></canvas></div></div>
+            <div class="settings-grid">
+                <div class="config-group">
+                    <span class="group-title">Rentang Aman (Volt)</span>
+                    <div class="form-group">
+                        <label>Min/Max Normal</label>
+                        <div class="input-range-box">
+                            <input type="number" id="v-aman-min" value="198">
+                            <span class="range-sep">-</span>
+                            <input type="number" id="v-aman-max" value="231">
+                        </div>
+                    </div>
                 </div>
-                <!-- Grafik 2: Faktor Daya -->
-                <div class="chart-card">
-                    <h4>Tren Faktor Daya (cos φ)</h4>
-                    <div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-pf"></canvas></div></div>
+                <div class="config-group">
+                    <span class="group-title">Batas Toleransi & Bahaya Mutlak</span>
+                    <div class="form-group">
+                        <label>Batas Bawah (Waspada / Bahaya)</label>
+                        <div class="input-range-box">
+                            <input type="number" id="v-waspada-l" value="188">
+                            <span class="range-sep">/</span>
+                            <input type="number" id="v-danger-l" value="170">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Batas Atas (Waspada / Bahaya)</label>
+                        <div class="input-range-box">
+                            <input type="number" id="v-waspada-h" value="241">
+                            <span class="range-sep">/</span>
+                            <input type="number" id="v-danger-h" value="250">
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. HASIL ANALISA & REKOMENDASI -->
+        <!-- 4. GRAFIK RIWAYAT (4 Panel: V, I, PvsS, PF) -->
+        <section class="history-controls">
+            <div class="date-loader">
+                <input type="date" id="select-date">
+                <button id="btn-load-hist" class="btn-primary">MUAT RIWAYAT LOG</button>
+            </div>
+        </section>
+
+        <section class="charts-grid">
+            <div class="chart-card"><h4>Voltage Log (V)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-v"></canvas></div></div></div>
+            <div class="chart-card"><h4>Current Log (A)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
+            <div class="chart-card"><h4>Daya Nyata (W) vs Daya Semu (VA)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-power"></canvas></div></div></div>
+            <div class="chart-card"><h4>Tren Faktor Daya (cos φ)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-pf"></canvas></div></div></div>
+        </section>
+
+        <!-- 5. HASIL ANALISA & REKOMENDASI (FITUR BARU) -->
         <section class="analysis-section">
             <div class="analysis-card">
-                <h3>🧠 Analisa Otomatis & Rekomendasi</h3>
+                <h3>🧠 Analisa Efisiensi & Rekomendasi Sistem</h3>
                 <div class="analysis-content">
                     <div class="analysis-box">
-                        <h4>🔍 Hasil Analisa Sistem:</h4>
-                        <ul id="analisa-list">
-                            <li>Menunggu data kelistrikan...</li>
-                        </ul>
+                        <h4>🔍 Rincian Analisa Beban:</h4>
+                        <ul id="analisa-list"><li>Menunggu data kelistrikan...</li></ul>
                     </div>
                     <div class="analysis-box">
-                        <h4>🎯 Kesimpulan & Rekomendasi:</h4>
-                        <p id="rekomendasi-text" class="rek-text">Sistem sedang menganalisa beban...</p>
+                        <h4>🎯 Kesimpulan Akhir:</h4>
+                        <p id="rekomendasi-text" class="rek-text">Sistem dalam status siaga.</p>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- 6. FOOTER STATUS PROTEKSI FISIK -->
+        <footer class="alert-footer">
+            <div id="alert-box" class="status-box">
+                <div class="alert-info">
+                    <small>STATUS PROTEKSI RELAY (OUTPUT FUZZY)</small>
+                    <h2 id="alert-text">MENGHUBUNGKAN...</h2>
+                </div>
+                <!-- Menampilkan Skor AI -->
+                <div class="score-badge" id="fuzzy-score-text">Skor AI: 0%</div>
+            </div>
+        </footer>
     </div>
     <script type="module" src="app.js"></script>
 </body>
