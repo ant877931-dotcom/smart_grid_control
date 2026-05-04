@@ -3,106 +3,71 @@ import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/
 
 const firebaseConfig = {
     apiKey: "AIzaSyAr_jda1kVfNTSRo62th2kMpJ-vsHlCXVw",
-    databaseURL: "https://smart-grid-monitor-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    authDomain: "smart-grid-monitor.firebaseapp.com",
+    databaseURL: "https://smart-grid-monitor-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "smart-grid-monitor"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- GAUGE ---
-const buildG = (id, title, max, color) => new RadialGauge({
-    renderTo: id, width: 200, height: 200, title: title, minValue: 0, maxValue: max,
-    colorPlate: "#0b1120", colorTitle: color, colorValueText: color, colorNumbers: "#cbd5e1",
-    colorNeedle: color, borders: false, valueBox: true, animationDuration: 1000
+// Gauge Builder
+const buildG = (id, title, max, ticks, color) => new RadialGauge({
+    renderTo: id, width: 220, height: 220, title: title, minValue: 0, maxValue: max,
+    majorTicks: ticks, minorTicks: 2, strokeTicks: true,
+    colorPlate: "#0b1120", colorTitle: color, colorValueText: color,
+    colorMajorTicks: color, colorMinorTicks: color, colorNumbers: "#cbd5e1",
+    colorNeedle: color, colorNeedleEnd: color, colorValueBoxRect: "#1e293b",
+    borders: true, borderOuterWidth: 10, colorBorderOuter: "#1e293b",
+    needleType: "arrow", needleWidth: 4, valueBox: true,
+    animationDuration: 1000, animationRule: "linear"
 }).draw();
 
-const gV = buildG('gauge-v', 'VOLT', 300, '#38bdf8');
-const gI = buildG('gauge-i', 'AMPERE', 20, '#34d399');
-const gP = buildG('gauge-p', 'WATT', 2000, '#fbbf24');
-const gS = buildG('gauge-s', 'VA', 2000, '#a78bfa');
-const gPF = buildG('gauge-pf', 'COS φ', 1, '#0ea5e9');
+const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300"], '#38bdf8');
+const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399');
+const gP = buildG('gauge-p', 'WATT', 2000, ["0","400","800","1200","1600","2000"], '#fbbf24');
+const gS = buildG('gauge-s', 'VA', 2000, ["0","400","800","1200","1600","2000"], '#a78bfa');
 
-// --- CHARTS (Satu per baris) ---
-const createChart = (id, label, color, isDashed = false) => new Chart(document.getElementById(id).getContext('2d'), {
+// Chart Builder (Vertical Stack)
+const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { 
         labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), 
-        datasets: [{ 
-            label: label, data: [], borderColor: color, 
-            borderDash: isDashed ? [5, 5] : [], 
-            backgroundColor: color + '22', fill: true, tension: 0.3 
-        }] 
+        datasets: [{ label, data: [], borderColor: color, fill: true, backgroundColor: color + '22', tension: 0.3 }] 
     },
     options: { 
-        responsive: true, maintainAspectRatio: false, 
-        scales: { y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } } 
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+            x: { ticks: { color: '#64748b' }, grid: { color: '#f1f5f9' } }, 
+            y: { ticks: { color: '#64748b' }, grid: { color: '#f1f5f9' } }
+        }
     }
 });
 
 const chartV = createChart('chart-v', 'Voltage (V)', '#38bdf8');
 const chartI = createChart('chart-i', 'Current (A)', '#34d399');
-const chartPF = createChart('chart-pf', 'Faktor Daya', '#0ea5e9');
+const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
+const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
-// Khusus Power (P vs S)
-const chartPower = new Chart(document.getElementById('chart-power').getContext('2d'), {
-    type: 'line',
-    data: { 
-        labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), 
-        datasets: [
-            { label: 'P (Watt)', data: [], borderColor: '#fbbf24', tension: 0.3 },
-            { label: 'S (VA)', data: [], borderColor: '#a78bfa', borderDash: [5, 5], tension: 0.3 }
-        ] 
-    },
-    options: { responsive: true, maintainAspectRatio: false }
-});
-
-// --- REALTIME & ANALISA ---
-onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
-    const d = snap.val();
-    if(d) {
-        let p = d.power_nyata || 0; let s = d.power_semu || 0;
-        gV.value = d.voltage; gI.value = d.current; gP.value = p; gS.value = s;
-
-        let pf = s > 0 ? p / s : 0;
-        gPF.value = parseFloat(pf.toFixed(2));
-
-        // Update Analisa Pakar
-        const listAnalisa = document.getElementById('analisa-list');
-        const textRek = document.getElementById('rekomendasi-text');
-        
-        if (s > 0) {
-            let analisaHtml = `<li>Daya Aktif: ${p}W | Daya Semu: ${s}VA</li>`;
-            if (pf >= 0.85) {
-                analisaHtml += `<li>Sistem Efisien (PF: ${pf.toFixed(2)})</li>`;
-                textRek.innerText = "✅ Kondisi Ideal. Tidak perlu tindakan.";
-                textRek.style.color = "#10b981";
-            } else {
-                analisaHtml += `<li>Rugi Daya Tinggi (PF: ${pf.toFixed(2)})</li>`;
-                textRek.innerText = "🛑 Buruk. Disarankan pasang Kapasitor Bank.";
-                textRek.style.color = "#ef4444";
-            }
-            listAnalisa.innerHTML = analisaHtml;
-        }
-
-        document.getElementById('alert-text').innerText = d.status;
-        document.getElementById('fuzzy-score-text').innerText = `Skor AI: ${parseFloat(d.fuzzy_score).toFixed(1)}%`;
-    }
-});
-
-// --- TOGGLE & SAVE CONFIG ---
+// Config Logic (Gambar 3)
+const setPanel = document.getElementById('settings-panel');
 const btnToggle = document.getElementById('btn-toggle-settings');
-const panel = document.getElementById('settings-panel');
 
-btnToggle.onclick = () => {
-    if (panel.classList.contains('hidden')) {
-        panel.classList.remove('hidden');
-        btnToggle.innerText = '✕ TUTUP'; // Gambar 3
-        btnToggle.style.color = '#ef4444';
-    } else {
-        panel.classList.add('hidden');
-        btnToggle.innerText = '⚙️ CONFIG FUZZY';
-        btnToggle.style.color = '';
-    }
+const closeConfig = () => {
+    setPanel.classList.add('hidden');
+    btnToggle.innerHTML = '⚙️ PARAMETER';
+    btnToggle.style.color = '';
+    btnToggle.style.borderColor = '';
 };
+
+const openConfig = () => {
+    setPanel.classList.remove('hidden');
+    btnToggle.innerHTML = '✕ TUTUP'; // Sesuai Gambar 3
+    btnToggle.style.color = '#ef4444';
+    btnToggle.style.borderColor = '#ef4444';
+};
+
+btnToggle.onclick = () => setPanel.classList.contains('hidden') ? openConfig() : closeConfig();
 
 document.getElementById('btn-save-settings').onclick = () => {
     const dataSet = {
@@ -111,26 +76,40 @@ document.getElementById('btn-save-settings').onclick = () => {
         v_danger_l: parseFloat(document.getElementById('v-danger-l').value),
         v_danger_h: parseFloat(document.getElementById('v-danger-h').value)
     };
-    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => alert("Parameter Disimpan!"));
+    update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => {
+        alert("Konfigurasi Tersimpan!");
+        closeConfig();
+    });
 };
 
-// --- HISTORY ---
+// Monitoring
+onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
+    const d = snap.val();
+    if(d) {
+        gV.value = d.voltage || 0; gI.value = d.current || 0;
+        gP.value = d.power_nyata || 0; gS.value = d.power_semu || 0;
+        document.getElementById('alert-text').innerText = "SISTEM " + (d.status || "UNKNOWN");
+        document.querySelector('.status-box').style.borderLeftColor = d.status === 'NORMAL' ? '#22c55e' : '#ef4444';
+    }
+});
+
+// Load History
 document.getElementById('btn-load-hist').onclick = () => {
     const dateStr = document.getElementById('select-date').value;
+    if(!dateStr) return alert("Pilih tanggal!");
     get(ref(db, `SmartGrid/History/Hourly/${dateStr}`)).then((snap) => {
         const h = snap.val();
         if(h) {
-            const v=[], a=[], p=[], s=[], pf=[];
-            for(let i=0; i<24; i++){
-                const k = String(i).padStart(2,'0');
+            const v=[], a=[], p=[], s=[];
+            for(let hr=0; hr<24; hr++){
+                const k = String(hr).padStart(2, '0');
                 v.push(h[k]?.v ?? null); a.push(h[k]?.a ?? null);
                 p.push(h[k]?.p ?? null); s.push(h[k]?.s ?? null);
-                pf.push((h[k]?.p && h[k]?.s) ? h[k].p / h[k].s : null);
             }
             chartV.data.datasets[0].data = v; chartV.update();
             chartI.data.datasets[0].data = a; chartI.update();
-            chartPower.data.datasets[0].data = p; chartPower.data.datasets[1].data = s; chartPower.update();
-            chartPF.data.datasets[0].data = pf; chartPF.update();
+            chartP.data.datasets[0].data = p; chartP.update();
+            chartS.data.datasets[0].data = s; chartS.update();
         }
     });
 };
