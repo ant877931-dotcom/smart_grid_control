@@ -60,15 +60,10 @@ header { background: var(--card-bg); padding: 20px 30px; border-radius: var(--ra
 .gauge-card:nth-child(2) .gauge-label { color: #34d399 !important; } 
 .gauge-card:nth-child(3) .gauge-label { color: #fbbf24 !important; } 
 .gauge-card:nth-child(4) .gauge-label { color: #a78bfa !important; } 
-.gauge-card:nth-child(5) .gauge-label { color: #0ea5e9 !important; } 
+.gauge-card:nth-child(5) .gauge-label { color: #0ea5e9 !important; }
 
-/* CHARTS AREA (2 Kolom) */
-.charts-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 30px; 
-    margin-bottom: 40px; 
-}
+/* CHARTS AREA (Tersusun Vertikal per Baris) */
+.charts-grid { display: flex; flex-direction: column; gap: 30px; margin-bottom: 40px; }
 .chart-card { background: #0f172a; border-radius: var(--radius-lg); padding: 25px; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2); }
 .chart-card h4 { margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 800; }
 
@@ -79,10 +74,20 @@ header { background: var(--card-bg); padding: 20px 30px; border-radius: var(--ra
 .chart-card:nth-child(5) h4 { color: #0ea5e9 !important; } 
 
 .scroll-wrapper { overflow-x: auto; border: 1px solid #1e293b; border-radius: var(--radius-md); width: 100%; background: #0b1120; }
-.inner-chart { min-width: 600px; height: 320px; padding: 15px; } 
+.inner-chart { min-width: 900px; height: 350px; padding: 15px; } 
+
+/* ANALISA PAKAR */
+.analysis-section { margin-bottom: 30px; }
+.analysis-card { background: #0f172a; padding: 30px; border-radius: var(--radius-lg); border: 1px solid #1e293b; border-left: 8px solid #fbbf24; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);}
+.analysis-card h3 { color: #f8fafc; margin-top: 0; }
+.analysis-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.analysis-box { background: #0b1120; padding: 20px; border-radius: 12px; border: 1px solid #1e293b; }
+.analysis-box h4 { margin-top: 0; color: #38bdf8; }
+ul#analisa-list { color: #cbd5e1; line-height: 1.6; font-size: 0.95rem; }
+#rekomendasi-text { font-weight: 600; line-height: 1.6; font-size: 1.05rem; margin: 0; color:#cbd5e1;}
 
 .status-box { background: var(--card-bg); padding: 25px 35px; border-radius: var(--radius-lg); border-left: 12px solid var(--accent-green); box-shadow: var(--shadow-card); display: flex; align-items: center;}
 .alert-info small { color: var(--text-muted); font-weight: 800; letter-spacing: 1px; font-size: 0.75rem; }
 .alert-info h2 { margin: 8px 0 0 0; font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
 
-@media (max-width: 1024px) { .charts-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .analysis-content { grid-template-columns: 1fr; } }
