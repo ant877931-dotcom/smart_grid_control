@@ -26,13 +26,12 @@
             <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label">ARUS (A)</div></div>
             <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label">DAYA NYATA (W)</div></div>
             <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label">DAYA SEMU (VA)</div></div>
-            <div class="gauge-card"><canvas id="gauge-pf"></canvas><div class="gauge-label">FAKTOR DAYA (cos φ)</div></div>
         </section>
 
         <section id="settings-panel" class="card settings-card hidden">
             <div class="settings-header">
                 <h3>⚙️ Konfigurasi Parameter Proteksi</h3>
-                <button id="btn-save-settings" class="btn-primary">SIMPAN KE ALAT</button>
+                <button id="btn-save-settings" class="btn-primary">SIMPAN KE FIREBASE</button>
             </div>
             <div class="settings-grid">
                 <div class="config-group">
@@ -78,24 +77,8 @@
         <section class="charts-grid">
             <div class="chart-card"><h4>Voltage Log (V)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-v"></canvas></div></div></div>
             <div class="chart-card"><h4>Current Log (A)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
-            <div class="chart-card"><h4>Power P (W) vs S (VA)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-power"></canvas></div></div></div>
-            <div class="chart-card"><h4>Faktor Daya (cos φ)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-pf"></canvas></div></div></div>
-        </section>
-
-        <section class="analysis-section">
-            <div class="analysis-card">
-                <h3>🧠 Analisa Efisiensi & Rekomendasi</h3>
-                <div class="analysis-content">
-                    <div class="analysis-box">
-                        <h4>🔍 Rincian Analisa:</h4>
-                        <ul id="analisa-list"><li>Menunggu data kelistrikan...</li></ul>
-                    </div>
-                    <div class="analysis-box">
-                        <h4>🎯 Kesimpulan:</h4>
-                        <p id="rekomendasi-text">Sistem dalam status siaga.</p>
-                    </div>
-                </div>
-            </div>
+            <div class="chart-card"><h4>Real Power Log (W)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-p"></canvas></div></div></div>
+            <div class="chart-card"><h4>Apparent Power Log (VA)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-s"></canvas></div></div></div>
         </section>
 
         <footer class="alert-footer">
