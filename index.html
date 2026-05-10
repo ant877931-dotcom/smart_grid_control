@@ -26,12 +26,13 @@
             <div class="gauge-card"><canvas id="gauge-i"></canvas><div class="gauge-label">ARUS (A)</div></div>
             <div class="gauge-card"><canvas id="gauge-p"></canvas><div class="gauge-label">DAYA NYATA (W)</div></div>
             <div class="gauge-card"><canvas id="gauge-s"></canvas><div class="gauge-label">DAYA SEMU (VA)</div></div>
+            <div class="gauge-card"><canvas id="gauge-pf"></canvas><div class="gauge-label">FAKTOR DAYA (cos φ)</div></div>
         </section>
 
         <section id="settings-panel" class="card settings-card hidden">
             <div class="settings-header">
                 <h3>⚙️ Konfigurasi Parameter Proteksi</h3>
-                <button id="btn-save-settings" class="btn-primary">SIMPAN KE FIREBASE</button>
+                <button id="btn-save-settings" class="btn-primary">SIMPAN KE ALAT</button>
             </div>
             <div class="settings-grid">
                 <div class="config-group">
@@ -79,6 +80,7 @@
             <div class="chart-card"><h4>Current Log (A)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-i"></canvas></div></div></div>
             <div class="chart-card"><h4>Real Power Log (W)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-p"></canvas></div></div></div>
             <div class="chart-card"><h4>Apparent Power Log (VA)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-s"></canvas></div></div></div>
+            <div class="chart-card" style="grid-column: 1 / -1;"><h4>Faktor Daya (cos φ)</h4><div class="scroll-wrapper"><div class="inner-chart"><canvas id="chart-pf"></canvas></div></div></div>
         </section>
 
         <footer class="alert-footer">
