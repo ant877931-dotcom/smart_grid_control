@@ -13,7 +13,7 @@ const db = getDatabase(app);
 
 // --- GAUGE BUILDER ---
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
-    renderTo: id, width: 220, height: 220, title: title, minValue: 0, maxValue: max,
+    renderTo: id, width: 240, height: 240, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
     colorPlate: "#0b1120", colorTitle: color, colorValueText: color, 
     colorMajorTicks: color, colorMinorTicks: color, colorNumbers: "#cbd5e1", 
@@ -27,14 +27,13 @@ const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300
 const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); 
 const gP = buildG('gauge-p', 'WATT', 2000, ["0","400","800","1200","1600","2000"], '#fbbf24'); 
 const gS = buildG('gauge-s', 'VA', 2000, ["0","400","800","1200","1600","2000"], '#a78bfa'); 
-const gPF = buildG('gauge-pf', 'COS φ', 1, ["0","0.2","0.4","0.6","0.8","1.0"], '#0ea5e9'); // PF Gauge
 
 // --- CHART BUILDER ---
-const createChart = (id, datasets) => new Chart(document.getElementById(id).getContext('2d'), {
+const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
     type: 'line',
     data: { 
         labels: Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`), 
-        datasets: datasets 
+        datasets: [{ label, data: [], borderColor: color, fill: true, backgroundColor: color + '22', tension: 0.3 }] 
     },
     options: { 
         responsive: true, maintainAspectRatio: false, color: '#f8fafc',
@@ -42,15 +41,10 @@ const createChart = (id, datasets) => new Chart(document.getElementById(id).getC
     }
 });
 
-const chartV = createChart('chart-v', [{ label: 'Voltage (V)', data: [], borderColor: '#38bdf8', fill: true, backgroundColor: '#38bdf822', tension: 0.3 }]);
-const chartI = createChart('chart-i', [{ label: 'Current (A)', data: [], borderColor: '#34d399', fill: true, backgroundColor: '#34d39922', tension: 0.3 }]);
-const chartPF = createChart('chart-pf', [{ label: 'Faktor Daya', data: [], borderColor: '#0ea5e9', fill: true, backgroundColor: '#0ea5e922', tension: 0.3 }]);
-
-// Kombinasi P dan S (Garis S putus-putus)
-const chartPower = createChart('chart-power', [
-    { label: 'Real Power (W)', data: [], borderColor: '#fbbf24', fill: true, backgroundColor: '#fbbf2422', tension: 0.3 },
-    { label: 'Apparent Power (VA)', data: [], borderColor: '#a78bfa', borderDash: [5, 5], tension: 0.3 }
-]);
+const chartV = createChart('chart-v', 'Voltage (V)', '#38bdf8');
+const chartI = createChart('chart-i', 'Current (A)', '#34d399');
+const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
+const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
 
 // --- CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
@@ -84,55 +78,18 @@ document.getElementById('btn-save-settings').onclick = () => {
     }).catch(err => alert("Gagal: " + err));
 };
 
-// --- REAL-TIME MONITORING & EXPERT SYSTEM ---
+// --- REAL-TIME MONITORING ---
 onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
     const d = snap.val();
     if(d) {
-        let p = d.power_nyata || 0;
-        let s = d.power_semu || 0;
+        gV.value = d.voltage || 0; 
+        gI.value = d.current || 0; 
+        gP.value = d.power_nyata || 0; 
+        gS.value = d.power_semu || 0;
         
-        gV.value = d.voltage || 0; gI.value = d.current || 0; 
-        gP.value = p; gS.value = s;
-
-        // Kalkulasi PF
-        let pf = 0; if (s > 0) pf = p / s;
-        gPF.value = parseFloat(pf.toFixed(2));
-
-        // Update Status Footer
         document.getElementById('alert-text').innerText = "SISTEM " + (d.status || "UNKNOWN");
         document.querySelector('.status-box').style.borderLeftColor = 
             d.status === 'NORMAL' ? '#22c55e' : (d.status === 'WASPADA' ? '#fbbf24' : '#ef4444');
-
-        // Analisa Pakar Otomatis
-        const listAnalisa = document.getElementById('analisa-list');
-        const textRek = document.getElementById('rekomendasi-text');
-        
-        if (s === 0) {
-            listAnalisa.innerHTML = "<li>Tidak mendeteksi adanya beban aktif.</li>";
-            textRek.innerText = "Sistem dalam keadaan standby. Menunggu peralatan listrik dihidupkan.";
-            textRek.style.color = "#cbd5e1";
-        } else {
-            let selisih = s - p;
-            let analisaHtml = `<li>Daya dikonsumsi: ${p} W dari total ditarik ${s} VA.</li>`;
-            
-            if (pf >= 0.90) {
-                analisaHtml += `<li>Faktor daya luar biasa baik (<span style="color:#34d399">${pf.toFixed(2)}</span>).</li>`;
-                analisaHtml += `<li>Rugi daya reaktif kecil: ${selisih.toFixed(1)} Var.</li>`;
-                textRek.innerText = "✅ Sistem SANGAT EFISIEN. Pertahankan kondisi kelistrikan saat ini.";
-                textRek.style.color = "#34d399"; 
-            } else if (pf >= 0.70) {
-                analisaHtml += `<li>Faktor daya menurun (<span style="color:#fbbf24">${pf.toFixed(2)}</span>).</li>`;
-                analisaHtml += `<li>Daya terbuang: ${selisih.toFixed(1)} Var.</li>`;
-                textRek.innerText = "⚠️ Efisiensi Cukup. Lakukan monitoring berkala.";
-                textRek.style.color = "#fbbf24"; 
-            } else {
-                analisaHtml += `<li>Faktor daya buruk (<span style="color:#ef4444">${pf.toFixed(2)}</span>).</li>`;
-                analisaHtml += `<li>Rugi daya reaktif TERLALU BESAR: ${selisih.toFixed(1)} Var.</li>`;
-                textRek.innerText = "🛑 BAHAYA PEMBOROSAN: Segera tambahkan Kapasitor Bank (PFC)!";
-                textRek.style.color = "#ef4444"; 
-            }
-            listAnalisa.innerHTML = analisaHtml;
-        }
     }
 });
 
@@ -144,18 +101,18 @@ document.getElementById('btn-load-hist').onclick = () => {
     get(ref(db, `SmartGrid/History/Hourly/${dateStr}`)).then((snap) => {
         const h = snap.val();
         if(h) {
-            const arrV=[], arrI=[], arrP=[], arrS=[], arrPF=[];
+            const arrV=[], arrI=[], arrP=[], arrS=[];
             for(let hr=0; hr<24; hr++){
                 const k = String(hr).padStart(2, '0');
-                let valP = h[k]?.p ?? null; let valS = h[k]?.s ?? null;
-                arrV.push(h[k]?.v ?? null); arrI.push(h[k]?.a ?? null);
-                arrP.push(valP); arrS.push(valS);
-                arrPF.push((valP && valS > 0) ? parseFloat((valP/valS).toFixed(2)) : null);
+                arrV.push(h[k]?.v ?? null); 
+                arrI.push(h[k]?.a ?? null); 
+                arrP.push(h[k]?.p ?? null); 
+                arrS.push(h[k]?.s ?? null);
             }
             chartV.data.datasets[0].data = arrV; chartV.update();
             chartI.data.datasets[0].data = arrI; chartI.update();
-            chartPower.data.datasets[0].data = arrP; chartPower.data.datasets[1].data = arrS; chartPower.update();
-            chartPF.data.datasets[0].data = arrPF; chartPF.update();
+            chartP.data.datasets[0].data = arrP; chartP.update();
+            chartS.data.datasets[0].data = arrS; chartS.update();
             alert("Riwayat berhasil dimuat!");
         } else {
             alert("Tidak ada data riwayat untuk tanggal tersebut.");
