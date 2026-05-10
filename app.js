@@ -27,7 +27,7 @@ const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300
 const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); 
 const gP = buildG('gauge-p', 'WATT', 2000, ["0","400","800","1200","1600","2000"], '#fbbf24'); 
 const gS = buildG('gauge-s', 'VA', 2000, ["0","400","800","1200","1600","2000"], '#a78bfa'); 
-const gPF = buildG('gauge-pf', 'COS φ', 1, ["0","0.2","0.4","0.6","0.8","1.0"], '#0ea5e9');
+const gPF = buildG('gauge-pf', 'COS φ', 1, ["0","0.2","0.4","0.6","0.8","1.0"], '#0ea5e9'); // PF Gauge
 
 // --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
@@ -80,17 +80,15 @@ document.getElementById('btn-save-settings').onclick = () => {
     }).catch(err => alert("Gagal: " + err));
 };
 
-// --- REAL-TIME MONITORING ---
+// --- REAL-TIME MONITORING & EXPERT SYSTEM ---
 onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
     const d = snap.val();
     if(d) {
         let p = d.power_nyata || 0;
         let s = d.power_semu || 0;
         
-        gV.value = d.voltage || 0; 
-        gI.value = d.current || 0; 
-        gP.value = p; 
-        gS.value = s;
+        gV.value = d.voltage || 0; gI.value = d.current || 0; 
+        gP.value = p; gS.value = s;
 
         // Kalkulasi PF
         let pf = 0; if (s > 0) pf = p / s;
@@ -100,6 +98,37 @@ onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
         document.getElementById('alert-text').innerText = "SISTEM " + (d.status || "UNKNOWN");
         document.querySelector('.status-box').style.borderLeftColor = 
             d.status === 'NORMAL' ? '#22c55e' : (d.status === 'WASPADA' ? '#fbbf24' : '#ef4444');
+
+        // Analisa Pakar Otomatis
+        const listAnalisa = document.getElementById('analisa-list');
+        const textRek = document.getElementById('rekomendasi-text');
+        
+        if (s === 0) {
+            listAnalisa.innerHTML = "<li>Tidak mendeteksi adanya beban aktif.</li>";
+            textRek.innerText = "Sistem dalam keadaan standby. Menunggu peralatan listrik dihidupkan.";
+            textRek.style.color = "#cbd5e1";
+        } else {
+            let selisih = s - p;
+            let analisaHtml = `<li>Daya dikonsumsi: ${p} W dari total ditarik ${s} VA.</li>`;
+            
+            if (pf >= 0.90) {
+                analisaHtml += `<li>Faktor daya luar biasa baik (<span style="color:#34d399">${pf.toFixed(2)}</span>).</li>`;
+                analisaHtml += `<li>Rugi daya reaktif kecil: ${selisih.toFixed(1)} Var.</li>`;
+                textRek.innerText = "✅ Sistem SANGAT EFISIEN. Pertahankan kondisi kelistrikan saat ini.";
+                textRek.style.color = "#34d399"; 
+            } else if (pf >= 0.70) {
+                analisaHtml += `<li>Faktor daya menurun (<span style="color:#fbbf24">${pf.toFixed(2)}</span>).</li>`;
+                analisaHtml += `<li>Daya terbuang: ${selisih.toFixed(1)} Var.</li>`;
+                textRek.innerText = "⚠️ Efisiensi Cukup. Lakukan monitoring berkala.";
+                textRek.style.color = "#fbbf24"; 
+            } else {
+                analisaHtml += `<li>Faktor daya buruk (<span style="color:#ef4444">${pf.toFixed(2)}</span>).</li>`;
+                analisaHtml += `<li>Rugi daya reaktif TERLALU BESAR: ${selisih.toFixed(1)} Var.</li>`;
+                textRek.innerText = "🛑 BAHAYA PEMBOROSAN: Segera tambahkan Kapasitor Bank (PFC)!";
+                textRek.style.color = "#ef4444"; 
+            }
+            listAnalisa.innerHTML = analisaHtml;
+        }
     }
 });
 
@@ -124,7 +153,7 @@ document.getElementById('btn-load-hist').onclick = () => {
             chartP.data.datasets[0].data = arrP; chartP.update();
             chartS.data.datasets[0].data = arrS; chartS.update();
             chartPF.data.datasets[0].data = arrPF; chartPF.update();
-            alert("Riwayat 5 Parameter berhasil dimuat!");
+            alert("Riwayat berhasil dimuat!");
         } else {
             alert("Tidak ada data riwayat untuk tanggal tersebut.");
         }
