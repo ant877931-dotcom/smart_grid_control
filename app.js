@@ -27,7 +27,7 @@ const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300
 const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); 
 const gP = buildG('gauge-p', 'WATT', 2000, ["0","400","800","1200","1600","2000"], '#fbbf24'); 
 const gS = buildG('gauge-s', 'VA', 2000, ["0","400","800","1200","1600","2000"], '#a78bfa'); 
-const gPF = buildG('gauge-pf', 'COS φ', 1, ["0","0.2","0.4","0.6","0.8","1.0"], '#0ea5e9'); // PF Gauge
+const gPF = buildG('gauge-pf', 'COS φ', 1, ["0","0.2","0.4","0.6","0.8","1.0"], '#0ea5e9');
 
 // --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
@@ -99,33 +99,24 @@ onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
         document.querySelector('.status-box').style.borderLeftColor = 
             d.status === 'NORMAL' ? '#22c55e' : (d.status === 'WASPADA' ? '#fbbf24' : '#ef4444');
 
-        // Analisa Pakar Otomatis
+        // --- RINCIAN ANALISA ---
         const listAnalisa = document.getElementById('analisa-list');
-        const textRek = document.getElementById('rekomendasi-text');
         
         if (s === 0) {
-            listAnalisa.innerHTML = "<li>Tidak mendeteksi adanya beban aktif.</li>";
-            textRek.innerText = "Sistem dalam keadaan standby. Menunggu peralatan listrik dihidupkan.";
-            textRek.style.color = "#cbd5e1";
+            listAnalisa.innerHTML = "<li>Tidak mendeteksi adanya beban aktif. Sistem dalam keadaan siaga.</li>";
         } else {
             let selisih = s - p;
-            let analisaHtml = `<li>Daya dikonsumsi: ${p} W dari total ditarik ${s} VA.</li>`;
+            let analisaHtml = `<li>Daya ditarik (Semu): <strong>${s} VA</strong>, Daya digunakan (Aktif): <strong>${p} W</strong>.</li>`;
             
             if (pf >= 0.90) {
-                analisaHtml += `<li>Faktor daya luar biasa baik (<span style="color:#34d399">${pf.toFixed(2)}</span>).</li>`;
-                analisaHtml += `<li>Rugi daya reaktif kecil: ${selisih.toFixed(1)} Var.</li>`;
-                textRek.innerText = "✅ Sistem SANGAT EFISIEN. Pertahankan kondisi kelistrikan saat ini.";
-                textRek.style.color = "#34d399"; 
+                analisaHtml += `<li>Faktor daya: <span style="color:#34d399; font-weight:bold;">${pf.toFixed(2)}</span> (Sangat Ideal).</li>`;
+                analisaHtml += `<li>Rugi daya reaktif: <strong>${selisih.toFixed(1)} Var</strong> (Efisiensi Tinggi).</li>`;
             } else if (pf >= 0.70) {
-                analisaHtml += `<li>Faktor daya menurun (<span style="color:#fbbf24">${pf.toFixed(2)}</span>).</li>`;
-                analisaHtml += `<li>Daya terbuang: ${selisih.toFixed(1)} Var.</li>`;
-                textRek.innerText = "⚠️ Efisiensi Cukup. Lakukan monitoring berkala.";
-                textRek.style.color = "#fbbf24"; 
+                analisaHtml += `<li>Faktor daya: <span style="color:#fbbf24; font-weight:bold;">${pf.toFixed(2)}</span> (Menurun).</li>`;
+                analisaHtml += `<li>Terdapat daya terbuang sebesar: <strong>${selisih.toFixed(1)} Var</strong>.</li>`;
             } else {
-                analisaHtml += `<li>Faktor daya buruk (<span style="color:#ef4444">${pf.toFixed(2)}</span>).</li>`;
-                analisaHtml += `<li>Rugi daya reaktif TERLALU BESAR: ${selisih.toFixed(1)} Var.</li>`;
-                textRek.innerText = "🛑 BAHAYA PEMBOROSAN: Segera tambahkan Kapasitor Bank (PFC)!";
-                textRek.style.color = "#ef4444"; 
+                analisaHtml += `<li>Faktor daya: <span style="color:#ef4444; font-weight:bold;">${pf.toFixed(2)}</span> (Kritis/Buruk).</li>`;
+                analisaHtml += `<li>Rugi daya reaktif: <strong>${selisih.toFixed(1)} Var</strong> (Indikasi pemborosan tinggi).</li>`;
             }
             listAnalisa.innerHTML = analisaHtml;
         }
