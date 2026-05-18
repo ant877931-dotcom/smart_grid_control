@@ -76,9 +76,25 @@ document.getElementById('btn-save-settings').onclick = () => {
     };
     
     update(ref(db, 'SmartGrid/Settings'), dataSet).then(() => {
-        alert("Konfigurasi Berhasil Disimpan!"); closeConfig();
+        alert("Konfigurasi Berhasil Disimpan & Sinkron ke ESP32!"); closeConfig();
     }).catch(err => alert("Gagal: " + err));
 };
+
+// =========================================================================
+// PERBAIKAN: TARIK DATA SETINGAN DARI FIREBASE AGAR TIDAK KEMBALI DEFAULT
+// =========================================================================
+onValue(ref(db, 'SmartGrid/Settings'), (snap) => {
+    const s = snap.val();
+    if(s) {
+        // Otomatis menimpa angka di kotak input dengan data riil dari Firebase
+        document.getElementById('v-aman-min').value = s.v_aman_min ?? 198;
+        document.getElementById('v-aman-max').value = s.v_aman_max ?? 231;
+        document.getElementById('v-waspada-l').value = s.v_waspada_l ?? 188;
+        document.getElementById('v-waspada-h').value = s.v_waspada_h ?? 241;
+        document.getElementById('v-danger-l').value = s.v_danger_l ?? 170;
+        document.getElementById('v-danger-h').value = s.v_danger_h ?? 250;
+    }
+});
 
 // --- REAL-TIME MONITORING & EXPERT SYSTEM ---
 onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
