@@ -27,7 +27,6 @@ const gV = buildG('gauge-v', 'VOLT', 300, ["0","50","100","150","200","250","300
 const gI = buildG('gauge-i', 'AMPERE', 20, ["0","4","8","12","16","20"], '#34d399'); 
 const gP = buildG('gauge-p', 'WATT', 2000, ["0","400","800","1200","1600","2000"], '#fbbf24'); 
 const gS = buildG('gauge-s', 'VA', 2000, ["0","400","800","1200","1600","2000"], '#a78bfa'); 
-const gPF = buildG('gauge-pf', 'COS φ', 1, ["0","0.2","0.4","0.6","0.8","1.0"], '#0ea5e9');
 
 // --- CHART BUILDER ---
 const createChart = (id, label, color) => new Chart(document.getElementById(id).getContext('2d'), {
@@ -46,7 +45,6 @@ const chartV = createChart('chart-v', 'Voltage (V)', '#38bdf8');
 const chartI = createChart('chart-i', 'Current (A)', '#34d399');
 const chartP = createChart('chart-p', 'Real Power (W)', '#fbbf24');
 const chartS = createChart('chart-s', 'Apparent Power (VA)', '#a78bfa');
-const chartPF = createChart('chart-pf', 'Faktor Daya (cos φ)', '#0ea5e9');
 
 // --- CONFIGURATION LOGIC ---
 const setPanel = document.getElementById('settings-panel');
@@ -81,12 +79,11 @@ document.getElementById('btn-save-settings').onclick = () => {
 };
 
 // =========================================================================
-// PERBAIKAN: TARIK DATA SETINGAN DARI FIREBASE AGAR TIDAK KEMBALI DEFAULT
+// TARIK DATA SETINGAN DARI FIREBASE AGAR TIDAK KEMBALI DEFAULT
 // =========================================================================
 onValue(ref(db, 'SmartGrid/Settings'), (snap) => {
     const s = snap.val();
     if(s) {
-        // Otomatis menimpa angka di kotak input dengan data riil dari Firebase
         document.getElementById('v-aman-min').value = s.v_aman_min ?? 198;
         document.getElementById('v-aman-max').value = s.v_aman_max ?? 231;
         document.getElementById('v-waspada-l').value = s.v_waspada_l ?? 188;
@@ -106,9 +103,8 @@ onValue(ref(db, 'SmartGrid/Realtime'), (snap) => {
         gV.value = d.voltage || 0; gI.value = d.current || 0; 
         gP.value = p; gS.value = s;
 
-        // Kalkulasi PF
+        // Kalkulasi PF hanya untuk teks analisa di bagian bawah
         let pf = 0; if (s > 0) pf = p / s;
-        gPF.value = parseFloat(pf.toFixed(2));
 
         // Update Status Footer
         document.getElementById('alert-text').innerText = "SISTEM " + (d.status || "UNKNOWN");
@@ -147,19 +143,18 @@ document.getElementById('btn-load-hist').onclick = () => {
     get(ref(db, `SmartGrid/History/Hourly/${dateStr}`)).then((snap) => {
         const h = snap.val();
         if(h) {
-            const arrV=[], arrI=[], arrP=[], arrS=[], arrPF=[];
+            const arrV=[], arrI=[], arrP=[], arrS=[];
             for(let hr=0; hr<24; hr++){
                 const k = String(hr).padStart(2, '0');
                 let valP = h[k]?.p ?? null; let valS = h[k]?.s ?? null;
                 arrV.push(h[k]?.v ?? null); arrI.push(h[k]?.a ?? null);
                 arrP.push(valP); arrS.push(valS);
-                arrPF.push((valP && valS > 0) ? parseFloat((valP/valS).toFixed(2)) : null);
             }
             chartV.data.datasets[0].data = arrV; chartV.update();
             chartI.data.datasets[0].data = arrI; chartI.update();
             chartP.data.datasets[0].data = arrP; chartP.update();
             chartS.data.datasets[0].data = arrS; chartS.update();
-            chartPF.data.datasets[0].data = arrPF; chartPF.update();
+            
             alert("Riwayat berhasil dimuat!");
         } else {
             alert("Tidak ada data riwayat untuk tanggal tersebut.");
