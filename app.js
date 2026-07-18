@@ -36,7 +36,7 @@ const createChart = (id, label, color) => new Chart(document.getElementById(id).
         datasets: [{ label, data: [], borderColor: color, fill: true, backgroundColor: color + '22', tension: 0.3 }] 
     },
     options: { 
-        responsive: true, maintainAspectRatio: false, color: '#f8fafc',
+        responsive: true, maintainAspectRatio: false, color: '#1e3a8a',
         scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } } }
     }
 });
