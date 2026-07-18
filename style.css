@@ -71,7 +71,7 @@ header { background: var(--card-bg); padding: 20px 30px; border-radius: var(--ra
 .chart-card:nth-child(3) h4 { color: #fbbf24 !important; } 
 .chart-card:nth-child(4) h4 { color: #a78bfa !important; } 
 
-.scroll-wrapper { overflow-x: auto; border: 1px solid #1e293b; border-radius: var(--radius-md); width: 100%; background: #0b1120; }
+.scroll-wrapper { overflow-x: auto; border: 1px solid #1e293b; border-radius: var(--radius-md); width: 100%; background: #ffffff; }
 .inner-chart { min-width: 900px; height: 350px; padding: 15px; } 
 
 /* ANALISA PAKAR */
