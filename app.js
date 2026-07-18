@@ -15,10 +15,14 @@ const db = getDatabase(app);
 const buildG = (id, title, max, ticks, color) => new RadialGauge({
     renderTo: id, width: 220, height: 220, title: title, minValue: 0, maxValue: max,
     majorTicks: ticks, minorTicks: 2, strokeTicks: true,
-    colorPlate: "#0b1120", colorTitle: color, colorValueText: color, 
-    colorMajorTicks: color, colorMinorTicks: color, colorNumbers: "#cbd5e1", 
-    colorNeedle: color, colorNeedleEnd: color, colorValueBoxRect: "#1e293b",
-    borders: true, borderOuterWidth: 10, colorBorderOuter: "#1e293b",
+    colorPlate: "#ffffff", // Latar meteran menjadi putih
+    colorTitle: color, colorValueText: color, 
+    colorMajorTicks: color, colorMinorTicks: color, 
+    colorNumbers: "#1e3a8a", // Angka skala menjadi biru tua agar terbaca
+    colorNeedle: color, colorNeedleEnd: color, 
+    colorValueBoxRect: "#eff6ff", // Kotak angka digital di bawah jarum
+    borders: true, borderOuterWidth: 10, 
+    colorBorderOuter: "#dbeafe", // Warna bingkai luar meteran
     needleType: "arrow", needleWidth: 4, valueBox: true,
     animationDuration: 1000, animationRule: "linear"
 }).draw();
